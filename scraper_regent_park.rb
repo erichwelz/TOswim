@@ -19,7 +19,7 @@ for i in 0..0 #eventually poll more weeks, possibly 4 of available 7
               if nodes.length == 1
                 nodes = el.children.text
               else
-                nodes.map(&:text)
+                nodes.map!(&:text)
               end
               nodes
             end
@@ -28,12 +28,12 @@ for i in 0..0 #eventually poll more weeks, possibly 4 of available 7
   week_dates.shift
   week_lane_swim_times.shift
 
-  week_info = week_dates.zip(week_lane_swim_times)
+  week_info = week_dates.zip(week_lane_swim_times).to_h
   puts week_info
 end
 
 ## Todo
-# build a hash
+#build a hash with keys dates, times
 #capture pool lists
 
 #Indoor pools list: http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm
