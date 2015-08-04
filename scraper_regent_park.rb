@@ -4,12 +4,19 @@ require 'pry'
 
 #######Find Pools#######
 
-# url = "http://www1.toronto.ca/parks/prd/facilities/indoor-pools/index.htm"
-# doc = Nokogiri::HTML(open(url))
 
+url = "http://www1.toronto.ca/parks/prd/facilities/indoor-pools/index.htm"
+doc = Nokogiri::HTML(open(url))
 
+pools = doc.at_css("#pfrBody > div.pfrListing > table > tbody")
+pool_links = pools.css('a').map { |link| link['href'] }
+pool_names = pools.css('a').map { |link| link.children.text }
 
-######Parse Weekly Leisure Swim Data
+pool_info = pool_names.zip(pool_links).to_h
+
+puts pool_info
+
+#####Parse Weekly Leisure Swim Data
 
 url = "http://www1.toronto.ca/parks/prd/facilities/complex/2012/"
 doc = Nokogiri::HTML(open(url))
@@ -44,14 +51,15 @@ for i in 0..1 #eventually poll more weeks, possibly 4 of available 7
 end
 
 puts weeks
-## Todo
 
-#capture pool lists
+# Todo
 
-#Indoor pools list: http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm
-#Outdoor pools list: http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm
+capture pool lists
 
-#Done
-# figure out how to split multiple swim times into array
-# loop for multiple weeks
-# build a hash
+Indoor pools list: http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm
+Outdoor pools list: http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm
+
+Done
+figure out how to split multiple swim times into array
+loop for multiple weeks
+build a hash
