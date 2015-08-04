@@ -5,35 +5,34 @@ require 'pry'
 url = "http://www1.toronto.ca/parks/prd/facilities/complex/2012/"
 doc = Nokogiri::HTML(open(url))
 
-week_0 = doc.at_css("#dropin_Swimming_0").text
-#week_1 = doc.at_css("#dropin_Swimming_1").text
+for i in 0..0 #eventually poll more weeks, possibly 4 of available 7
+  week = doc.at_css("#dropin_Swimming_#{i}").text
 
-week_0_dates = doc.at_css("#dropin_Swimming_0 tr").children.map{ |el| el.text }
+  week_dates = doc.at_css("#dropin_Swimming_#{i} tr").children.map(&:text)
 
-lane_swim_row_index = doc.at_css("#dropin_Swimming_0 tbody").css('tr')
-                         .find_index { |el| el.text=~ /Lane Swim/ }
+  lane_swim_row_index = doc.at_css("#dropin_Swimming_#{i} tbody").css('tr')
+                           .find_index { |el| el.text=~ /Lane Swim/ }
 
-week_0_lane_swim_times = doc.at_css("#dropin_Swimming_0 tbody").css('tr')[lane_swim_row_index].children
-   .map do |el|
-            nodes = el.children.find_all{ |x| x.text? }
+  week_lane_swim_times = doc.at_css("#dropin_Swimming_#{i} tbody").css('tr')[lane_swim_row_index].children
+     .map do |el|
+            nodes = el.children.find_all(&:text?)
               if nodes.length == 1
                 nodes = el.children.text
               else
-                nodes.map{ |x| x.text }
+                nodes.map(&:text)
               end
               nodes
             end
 
-#remove empty index 0's
-week_0_dates.shift
-week_0_lane_swim_times.shift
+  #remove empty index 0's
+  week_dates.shift
+  week_lane_swim_times.shift
 
-week_0_info = week_0_dates.zip(week_0_lane_swim_times)
-
-puts week_0_info
+  week_info = week_dates.zip(week_lane_swim_times)
+  puts week_info
+end
 
 ## Todo
-# loop for multiple weeks
 # build a hash
 #capture pool lists
 
@@ -42,3 +41,4 @@ puts week_0_info
 
 #Done
 # figure out how to split multiple swim times into array
+# loop for multiple weeks
