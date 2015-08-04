@@ -2,20 +2,30 @@ require 'nokogiri'
 require 'open-uri'
 require 'pry'
 
+#######Find Pools#######
+
+# url = "http://www1.toronto.ca/parks/prd/facilities/indoor-pools/index.htm"
+# doc = Nokogiri::HTML(open(url))
+
+
+
+######Parse Weekly Leisure Swim Data
+
 url = "http://www1.toronto.ca/parks/prd/facilities/complex/2012/"
 doc = Nokogiri::HTML(open(url))
 
 weeks = []
 for i in 0..1 #eventually poll more weeks, possibly 4 of available 7
 
-  week = doc.at_css("#dropin_Swimming_#{i}").text
+  week = doc.at_css("#dropin_Swimming_#{i}")
 
-  week_dates = doc.at_css("#dropin_Swimming_#{i} tr").children.map(&:text)
+  week_dates = week.at_css('tr').children.map(&:text)
 
-  lane_swim_row_index = doc.at_css("#dropin_Swimming_#{i} tbody").css('tr')
+  lane_swim_row_index = week.at_css("tbody").css('tr')
                            .find_index { |el| el.text=~ /Lane Swim/ }
 
-  week_lane_swim_times = doc.at_css("#dropin_Swimming_#{i} tbody").css('tr')[lane_swim_row_index].children
+  # binding.pry if i == 1
+  week_lane_swim_times = week.at_css("tbody").css('tr')[lane_swim_row_index].children
      .map do |el|
             nodes = el.children.find_all(&:text?)
               if nodes.length == 1
