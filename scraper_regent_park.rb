@@ -23,12 +23,10 @@ doc.at_css("#dropin_Swimming_0 tbody").css('tr')[lane_swim_row_index].children
                       if nodes.length == 1
                         nodes = el.children.text
                       else
-                        nodes.each_with_index{ |x, i| nodes[i] = x.text }
+                        nodes.map{ |x| x.text }
                       end
                         week_0_lane_swim_times[i] = nodes
                     end
-
-
 
 #remove empty index 0's
 week_0_dates.shift
@@ -38,12 +36,13 @@ week_0_info = week_0_dates.zip(week_0_lane_swim_times)
 
 puts week_0_info
 
-#Todo
-# figure out how to split multiple swim times into array
-
+## Todo
+# loop for multiple weeks
+# build a hash
+#capture pool lists
 
 #Indoor pools list: http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm
 #Outdoor pools list: http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm
 
-# doc.at_css("#dropin_Swimming_0 tr").children.count
-
+#Done
+# figure out how to split multiple swim times into arra
