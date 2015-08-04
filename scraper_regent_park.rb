@@ -2,21 +2,23 @@ require 'nokogiri'
 require 'open-uri'
 require 'pry'
 
-#######Find Pools#######
+#######Find Indoor Pools#######
+all_pool_info = []
 
+for i in 0..1
+  i == 0 ? url = "http://www1.toronto.ca/parks/prd/facilities/indoor-pools/index.htm" : url = "http://www1.toronto.ca/parks/prd/facilities/indoor-pools/2-indoor_pool.htm"
+  doc = Nokogiri::HTML(open(url))
 
-url = "http://www1.toronto.ca/parks/prd/facilities/indoor-pools/index.htm"
-doc = Nokogiri::HTML(open(url))
+  pools = doc.at_css("#pfrBody > div.pfrListing > table > tbody")
+  pool_links = pools.css('a').map { |link| link['href'] }
+  pool_names = pools.css('a').map { |link| link.children.text }
 
-pools = doc.at_css("#pfrBody > div.pfrListing > table > tbody")
-pool_links = pools.css('a').map { |link| link['href'] }
-pool_names = pools.css('a').map { |link| link.children.text }
+  all_pool_info.push(pool_names.zip(pool_links).to_h)
+end
+puts all_pool_info
+# all_pool_info[1]['Regent Park Aquatic Centre']
 
-pool_info = pool_names.zip(pool_links).to_h
-
-puts pool_info
-
-#####Parse Weekly Leisure Swim Data
+#####Parse Weekly Leisure Swim Data#####
 
 url = "http://www1.toronto.ca/parks/prd/facilities/complex/2012/"
 doc = Nokogiri::HTML(open(url))
@@ -31,7 +33,6 @@ for i in 0..1 #eventually poll more weeks, possibly 4 of available 7
   lane_swim_row_index = week.at_css("tbody").css('tr')
                            .find_index { |el| el.text=~ /Lane Swim/ }
 
-  # binding.pry if i == 1
   week_lane_swim_times = week.at_css("tbody").css('tr')[lane_swim_row_index].children
      .map do |el|
             nodes = el.children.find_all(&:text?)
@@ -53,13 +54,12 @@ end
 puts weeks
 
 # Todo
+#capture indoor pool lists
 
-capture pool lists
+#Indoor pools list: http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm
+#Outdoor pools list: http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm
 
-Indoor pools list: http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm
-Outdoor pools list: http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm
-
-Done
-figure out how to split multiple swim times into array
-loop for multiple weeks
-build a hash
+#Done
+#figure out how to split multiple swim times into array
+#loop for multiple weeks
+#build a hash
