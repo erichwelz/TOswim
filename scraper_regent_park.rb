@@ -3,7 +3,7 @@ require 'open-uri'
 require 'pry'
 
 #######Find Indoor Pools#######
-all_pool_info = []
+all_pool_info = {}
 
 for i in 0..1
   i == 0 ? url = "http://www1.toronto.ca/parks/prd/facilities/indoor-pools/index.htm" : url = "http://www1.toronto.ca/parks/prd/facilities/indoor-pools/2-indoor_pool.htm"
@@ -13,17 +13,16 @@ for i in 0..1
   pool_links = pools.css('a').map { |link| link['href'] }
   pool_names = pools.css('a').map { |link| link.children.text }
 
-  all_pool_info.push(pool_names.zip(pool_links).to_h)
+  all_pool_info.merge!(pool_names.zip(pool_links).to_h)
 end
-puts all_pool_info
-# all_pool_info[1]['Regent Park Aquatic Centre']
+# puts all_pool_info
 
 #####Parse Weekly Leisure Swim Data#####
 
-url = "http://www1.toronto.ca/parks/prd/facilities/complex/2012/"
+url = "http://www1.toronto.ca" + all_pool_info['Regent Park Aquatic Centre']
 doc = Nokogiri::HTML(open(url))
 
-weeks = []
+weeks = {}
 for i in 0..1 #eventually poll more weeks, possibly 4 of available 7
 
   week = doc.at_css("#dropin_Swimming_#{i}")
@@ -48,7 +47,7 @@ for i in 0..1 #eventually poll more weeks, possibly 4 of available 7
   week_dates.shift
   week_lane_swim_times.shift
 
-  weeks.push(week_dates.zip(week_lane_swim_times).to_h)
+  weeks.merge!(week_dates.zip(week_lane_swim_times).to_h)
 end
 
 puts weeks
@@ -62,4 +61,4 @@ puts weeks
 #Done
 #figure out how to split multiple swim times into array
 #loop for multiple weeks
-#build a hash
+#build hashes
