@@ -1,6 +1,7 @@
 require 'nokogiri'
 require 'open-uri'
 require 'pry'
+require 'json'
 
 #######Find Indoor Pools#######
 all_pool_info = {}
@@ -50,12 +51,14 @@ for i in 0..1 #eventually poll more weeks, possibly 4 of available 7
   weeks.merge!(week_dates.zip(week_lane_swim_times).to_h)
 end
 
-puts weeks
+File.open("pool_data.json","w") do |f|
+  f.write(weeks.to_json)
+end
 
 # Todo
-#determine output, save as json object or YAML?
+
 #start displaying, filtering?
-#maybe transform date save to File.write JSON / CSV
+#maybe transform date save
 
 #Indoor pools list: http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm
 #Outdoor pools list: http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm
@@ -65,3 +68,4 @@ puts weeks
 #loop for multiple weeks
 #build hashes
 #capture indoor pool lists
+#determine output, save as json object or YAML?
