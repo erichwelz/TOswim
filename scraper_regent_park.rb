@@ -23,7 +23,9 @@ end
 url = "http://www1.toronto.ca" + all_pool_info['Regent Park Aquatic Centre']
 doc = Nokogiri::HTML(open(url))
 
+pools_data = {}
 weeks = {}
+
 for i in 0..1 #eventually poll more weeks, possibly 4 of available 7
 
   week = doc.at_css("#dropin_Swimming_#{i}")
@@ -48,15 +50,15 @@ for i in 0..1 #eventually poll more weeks, possibly 4 of available 7
   week_dates.shift
   week_lane_swim_times.shift
 
-  weeks.merge!(week_dates.zip(week_lane_swim_times).to_h)
+  pools_data['Regent Park Aquatic Centre'] = weeks.merge!(week_dates.zip(week_lane_swim_times).to_h)
 end
 
 File.open("pool_data.json","w") do |f|
-  f.write(weeks.to_json)
+  f.write(pools_data.to_json)
 end
 
 # Todo
-
+# determine ideal hash format, where to bring in pool geocode data
 #start displaying, filtering?
 #maybe transform date save
 
