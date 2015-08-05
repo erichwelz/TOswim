@@ -20,8 +20,8 @@ end
 #####Parse Weekly Leisure Swim Data#####
 
 pools_data = {}
-
-all_pool_info.first(5).each do |pool|
+all_pool_info.each do |pool|
+  puts "Attempting to scrape: " + pool[0]
   url = "http://www1.toronto.ca" + pool[1]
   doc = Nokogiri::HTML(open(url))
 
@@ -30,9 +30,10 @@ all_pool_info.first(5).each do |pool|
   for i in 0..1 #eventually poll more weeks, possibly 4 of available 7
 
     week = doc.at_css("#dropin_Swimming_#{i}")
-    week_dates = week.at_css('tr').children.map(&:text)
-    lane_swim_row_index = week.at_css("tbody").css('tr')
-                             .find_index { |el| el.text=~ /Lane Swim/ }
+    !week.nil?? week_dates = week.at_css('tr').children.map(&:text) : next
+
+    !week_dates.nil?? lane_swim_row_index = week.at_css("tbody").css('tr')
+                             .find_index { |el| el.text=~ /Lane Swim/ } : next
 
     if !lane_swim_row_index.nil?
       week_lane_swim_times = week.at_css("tbody").css('tr')[lane_swim_row_index].children
@@ -43,7 +44,6 @@ all_pool_info.first(5).each do |pool|
                   else
                     nodes.map!(&:text)
                   end
-                  nodes
                 end
     #remove empty index 0's
     week_dates.shift
@@ -53,13 +53,15 @@ all_pool_info.first(5).each do |pool|
   end
 end
 
-
 File.open("pool_data.json","w") do |f|
   f.write(pools_data.to_json)
 end
 
 # Todo
-# determine ideal hash format, where to bring in pool geocode data
+# break out into methods begin /rescue?
+# remind self how to log name of vars while blown up (smaller method with info passed in probably!)
+# struct instead of array for pool data?
+# Pool geocode data
 #start displaying, filtering?
 #maybe transform date save
 
