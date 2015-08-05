@@ -20,38 +20,43 @@ end
 
 #####Parse Weekly Leisure Swim Data#####
 
-url = "http://www1.toronto.ca" + all_pool_info['Regent Park Aquatic Centre']
-doc = Nokogiri::HTML(open(url))
-
 pools_data = {}
-weeks = {}
 
-for i in 0..1 #eventually poll more weeks, possibly 4 of available 7
+all_pool_info.first(1).each do |pool|
+  url = "http://www1.toronto.ca" + pool[1]
+  doc = Nokogiri::HTML(open(url))
 
-  week = doc.at_css("#dropin_Swimming_#{i}")
 
-  week_dates = week.at_css('tr').children.map(&:text)
+  weeks = {}
 
-  lane_swim_row_index = week.at_css("tbody").css('tr')
-                           .find_index { |el| el.text=~ /Lane Swim/ }
+  for i in 0..1 #eventually poll more weeks, possibly 4 of available 7
 
-  week_lane_swim_times = week.at_css("tbody").css('tr')[lane_swim_row_index].children
-     .map do |el|
-            nodes = el.children.find_all(&:text?)
-              if nodes.length == 1
-                nodes = el.children.text
-              else
-                nodes.map!(&:text)
+    week = doc.at_css("#dropin_Swimming_#{i}")
+
+    week_dates = week.at_css('tr').children.map(&:text)
+
+    lane_swim_row_index = week.at_css("tbody").css('tr')
+                             .find_index { |el| el.text=~ /Lane Swim/ }
+
+    week_lane_swim_times = week.at_css("tbody").css('tr')[lane_swim_row_index].children
+       .map do |el|
+              nodes = el.children.find_all(&:text?)
+                if nodes.length == 1
+                  nodes = el.children.text
+                else
+                  nodes.map!(&:text)
+                end
+                nodes
               end
-              nodes
-            end
 
-  #remove empty index 0's
-  week_dates.shift
-  week_lane_swim_times.shift
+    #remove empty index 0's
+    week_dates.shift
+    week_lane_swim_times.shift
 
-  pools_data['Regent Park Aquatic Centre'] = weeks.merge!(week_dates.zip(week_lane_swim_times).to_h)
+    pools_data[pool[0]] = weeks.merge!(week_dates.zip(week_lane_swim_times).to_h)
+  end
 end
+
 
 File.open("pool_data.json","w") do |f|
   f.write(pools_data.to_json)
