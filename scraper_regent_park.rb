@@ -16,44 +16,40 @@ for i in 0..1
 
   all_pool_info.merge!(pool_names.zip(pool_links).to_h)
 end
-# puts all_pool_info
 
 #####Parse Weekly Leisure Swim Data#####
 
 pools_data = {}
 
-all_pool_info.first(1).each do |pool|
+all_pool_info.first(5).each do |pool|
   url = "http://www1.toronto.ca" + pool[1]
   doc = Nokogiri::HTML(open(url))
-
 
   weeks = {}
 
   for i in 0..1 #eventually poll more weeks, possibly 4 of available 7
 
     week = doc.at_css("#dropin_Swimming_#{i}")
-
     week_dates = week.at_css('tr').children.map(&:text)
-
     lane_swim_row_index = week.at_css("tbody").css('tr')
                              .find_index { |el| el.text=~ /Lane Swim/ }
 
-    week_lane_swim_times = week.at_css("tbody").css('tr')[lane_swim_row_index].children
-       .map do |el|
-              nodes = el.children.find_all(&:text?)
-                if nodes.length == 1
-                  nodes = el.children.text
-                else
-                  nodes.map!(&:text)
+    if !lane_swim_row_index.nil?
+      week_lane_swim_times = week.at_css("tbody").css('tr')[lane_swim_row_index].children
+         .map do |el|
+                nodes = el.children.find_all(&:text?)
+                  if nodes.length == 1
+                    nodes = el.children.text
+                  else
+                    nodes.map!(&:text)
+                  end
+                  nodes
                 end
-                nodes
-              end
-
     #remove empty index 0's
     week_dates.shift
     week_lane_swim_times.shift
-
     pools_data[pool[0]] = weeks.merge!(week_dates.zip(week_lane_swim_times).to_h)
+    end
   end
 end
 
