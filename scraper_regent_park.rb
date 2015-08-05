@@ -6,7 +6,7 @@ require 'pry'
 all_pool_info = {}
 
 for i in 0..1
-  i == 0 ? url = "http://www1.toronto.ca/parks/prd/facilities/indoor-pools/index.htm" : url = "http://www1.toronto.ca/parks/prd/facilities/indoor-pools/2-indoor_pool.htm"
+  url = i == 0 ? "http://www1.toronto.ca/parks/prd/facilities/indoor-pools/index.htm" : "http://www1.toronto.ca/parks/prd/facilities/indoor-pools/2-indoor_pool.htm"
   doc = Nokogiri::HTML(open(url))
 
   pools = doc.at_css("#pfrBody > div.pfrListing > table > tbody")
@@ -53,7 +53,9 @@ end
 puts weeks
 
 # Todo
-#capture indoor pool lists
+#determine output, save as json object or YAML?
+#start displaying, filtering?
+#maybe transform date save to File.write JSON / CSV
 
 #Indoor pools list: http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm
 #Outdoor pools list: http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm
@@ -62,3 +64,4 @@ puts weeks
 #figure out how to split multiple swim times into array
 #loop for multiple weeks
 #build hashes
+#capture indoor pool lists
