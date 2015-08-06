@@ -7,24 +7,27 @@ require 'json'
 def gather_pool_urls()
   @pool_urls = {}
 
+  # Gather Pool Data
   for i in 0..1
     url = i == 0 ? "sample_files/indoorpools_1.html" : "sample_files/outdoorpools_1.html"
     doc = Nokogiri::HTML(open(url))
 
     pools = doc.at_css("#pfrBody > div.pfrListing > table > tbody")
-    pool_names = pools.css('a').map { |link| link.children.text }
-    pool_links = pools.css('a').map { |link| link['href'] }
-
-    pool_names.each_with_index do |pool, index|
-      current_pool = {}
-      current_pool[:name] = pool_names[index]
-      current_pool[:url] = pool_links[index]
-      @pool_urls[index] = current_pool
-    end
+    pool_names ||= []
+    pool_links ||= []
+    pool_names += pools.css('a').map { |link| link.children.text }
+    pool_links += pools.css('a').map { |link| link['href'] }
   end
 
+  # Convert Pool Data to Hash
+  pool_names.each_with_index do |pool, index|
+    current_pool = {}
+    current_pool[:name] = pool_names[index]
+    current_pool[:url] = pool_links[index]
+    @pool_urls[index] = current_pool
+  end
 
-
+  # Write Hash
   File.open("pool_urls.json","w") do |f|
     f.write(@pool_urls.to_json)
   end
@@ -89,7 +92,6 @@ gather_pool_swim_times()
 #Outdoor pools list: http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm
 
 #Bugs
-#Only works with last pool file presently
 
 #Done
 #figure out how to split multiple swim times into array
