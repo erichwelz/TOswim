@@ -21,9 +21,10 @@ def gather_pool_urls()
     pool_links += pools.css('a').map { |link| link['href'] }
 
     pool_addresses ||= []
+    address_index_incrementer = pools.css('td').length / pools.css('tr').length
     pools.css('td').each_with_index do |node, index|
-      #wanted every third TD 1,4,7,10
-      if index == 1 || (index % 3 == 1)
+      # Address is always second column, table width varies for indoor vs. outdoor
+      if index == 1 || (index % address_index_incrementer == 1)
         pool_addresses << node.text
       end
     end
@@ -98,8 +99,6 @@ gather_pool_urls()
 # Pool geocode data
 #start displaying, filtering?
 #maybe transform date save
-
-#Bug, address index different for outdoor pools
 
 #Indoor pools list: http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm
 #Outdoor pools list: http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm
