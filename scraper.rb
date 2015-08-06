@@ -13,10 +13,20 @@ def gather_pool_urls()
     doc = Nokogiri::HTML(open(url))
 
     pools = doc.at_css("#pfrBody > div.pfrListing > table > tbody")
+
     pool_names ||= []
-    pool_links ||= []
     pool_names += pools.css('a').map { |link| link.children.text }
+
+    pool_links ||= []
     pool_links += pools.css('a').map { |link| link['href'] }
+
+    pool_addresses ||= []
+    pools.css('td').each_with_index do |node, index|
+      #wanted every third TD 1,4,7,10
+      if index == 1 || (index % 3 == 1)
+        pool_addresses << node.text
+      end
+    end
   end
 
   # Convert Pool Data to Hash
@@ -24,6 +34,7 @@ def gather_pool_urls()
     current_pool = {}
     current_pool[:name] = pool_names[index]
     current_pool[:url] = pool_links[index]
+    current_pool[:address] = pool_addresses[index]
     @pool_urls[index] = current_pool
   end
 
@@ -79,7 +90,7 @@ def gather_pool_swim_times
 end
 
 gather_pool_urls()
-gather_pool_swim_times()
+#gather_pool_swim_times()
 
 # Todo
 # remind self how to log name of vars while blown up (smaller method with info passed in probably!)
@@ -87,6 +98,8 @@ gather_pool_swim_times()
 # Pool geocode data
 #start displaying, filtering?
 #maybe transform date save
+
+#Bug, address index different for outdoor pools
 
 #Indoor pools list: http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm
 #Outdoor pools list: http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm
