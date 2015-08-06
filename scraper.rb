@@ -33,14 +33,14 @@ def gather_pool_urls()
 
     pool_coordinates ||= []
     pool_addresses.each do |address|
-      pool_coordinates << Geocoder.coordinates("#{address}, Toronto")
-      # pool_coordinates << ['20','20']
+      # pool_coordinates << Geocoder.coordinates("#{address}, Toronto")
+      pool_coordinates << ['20','20']
       puts "Geocoding... #{address}"
     end
   end
 
   # Convert Pool Data to Hash
-  pool_names.each do |pool|
+  pool_names.each_with_index do |pool, index|
     current_pool = {}
     current_pool[:name] = pool_names[index]
     current_pool[:url] = pool_links[index]
@@ -63,8 +63,8 @@ def gather_pool_swim_times
   end
 
   @pool_urls.each do |pool|
-    puts "Attempting to scrape: " + pool['name']
-    url = "http://www1.toronto.ca" + pool['url']
+    puts "Attempting to scrape: " + pool[:name]
+    url = "http://www1.toronto.ca" + pool[:url]
     doc = Nokogiri::HTML(open(url))
 
     weeks = {}
