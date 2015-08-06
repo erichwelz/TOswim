@@ -2,8 +2,10 @@ require 'nokogiri'
 require 'open-uri'
 require 'pry'
 require 'json'
+require 'geocoder'
 
-#######Find Some pools#######
+Geocoder.configure(:timeout => 10)
+# Gather the pools
 def gather_pool_urls()
   @pool_urls = {}
 
@@ -28,6 +30,11 @@ def gather_pool_urls()
         pool_addresses << node.text
       end
     end
+
+    pool_coordinates ||= []
+    pool_addresses.each do |address|
+      pool_coordinates << Geocoder.coordinates("#{address}, Toronto")
+    end
   end
 
   # Convert Pool Data to Hash
@@ -36,6 +43,7 @@ def gather_pool_urls()
     current_pool[:name] = pool_names[index]
     current_pool[:url] = pool_links[index]
     current_pool[:address] = pool_addresses[index]
+    current_pool[:coordinates] = pool_coordinates[index]
     @pool_urls[index] = current_pool
   end
 
@@ -96,7 +104,7 @@ gather_pool_urls()
 # Todo
 # remind self how to log name of vars while blown up (smaller method with info passed in probably!)
 # struct instead of array for pool data?
-# Pool geocode data
+# Pool geocode data - http://www.rubygeocoder.com/
 #start displaying, filtering?
 #maybe transform date save
 
