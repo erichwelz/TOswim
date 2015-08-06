@@ -40,7 +40,7 @@ def gather_pool_urls()
   end
 
   # Convert Pool Data to Hash
-  pool_names.each_with_index do |pool, index|
+  pool_names.first(5).each_with_index do |pool, index|
     current_pool = {}
     current_pool[:name] = pool_names[index]
     current_pool[:url] = pool_links[index]
@@ -100,10 +100,11 @@ def gather_pool_swim_times
   # Convert Pool Data to Hash
   @pool_urls.each_with_index do |pool, index|
     current_pool = {}
-    current_pool[:name] = @pool_urls[index][:name]
-    current_pool[:url] = @pool_urls[index][:url]
-    current_pool[:address] = @pool_urls[index][:address]
-    current_pool[:coordinates] = @pool_urls[index][:coordinates]
+    binding.pry if index == 2
+
+    #copy existing keys, IE name, url, address, coordinates
+    @pool_urls[index].keys.each { |key| current_pool[key] = @pool_urls[index][key] }
+
     current_pool[:times] = @week_times_and_dates[index]
     pools_data << current_pool
   end
