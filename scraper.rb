@@ -32,9 +32,11 @@ def gather_pool_urls()
     end
 
     pool_coordinates ||= []
-    pool_addresses.each do |address|
-      # pool_coordinates << Geocoder.coordinates("#{address}, Toronto")
-      pool_coordinates << ['20','20']
+    pool_addresses.first(5).each do |address|
+      #coordinates_arr = Geocoder.coordinates("#{address}, Toronto")
+      #pool_coordinates << { latitude: coordinates_arr[0], longitude: coordinates_arr[1] }
+
+      pool_coordinates << { latitude: 50.123, longitude: 50.12 }
       puts "Geocoding... #{address}"
     end
   end
@@ -135,4 +137,5 @@ gather_pool_swim_times()
 #capture indoor pool lists
 #determine output, save as json object or YAML?
 # Pool geocode data - http://www.rubygeocoder.com/
-#can't rely on instance variable, so symbolize_names when grabbing info from JSON
+# Symbolize keys for JSON retrieval as JSON doesn't natively support keys, rather uses strings
+# latitude / longitude, display proper
