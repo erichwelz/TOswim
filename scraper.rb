@@ -31,6 +31,7 @@ def gather_pool_urls()
       end
     end
 
+    # Geotag pools
     pool_coordinates ||= []
     pool_addresses.first(5).each do |address|
       #coordinates_arr = Geocoder.coordinates("#{address}, Toronto")
@@ -99,6 +100,12 @@ def gather_pool_swim_times
     end
   end
 
+  # remove days with no swim times
+  @week_times_and_dates.each do |pool|
+    # empty days return a single special character
+    pool.delete_if { |k, v| v.length == 1 }
+  end
+
   # Convert Pool Data to Hash
   @pool_urls.each_with_index do |pool, index|
     current_pool = {}
@@ -116,7 +123,7 @@ def gather_pool_swim_times
   end
 end
 
-gather_pool_urls()
+#gather_pool_urls()
 gather_pool_swim_times()
 
 # Todo
