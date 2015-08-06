@@ -59,7 +59,7 @@ end
 def gather_pool_swim_times
   pools_data = {}
   if @pool_urls.nil?
-    @pool_urls = JSON.parse(File.read('pool_urls.json'))
+    @pool_urls = JSON.parse(File.read('pool_urls.json'), symbolize_names: true)
   end
 
   @pool_urls.each do |pool|
@@ -90,7 +90,8 @@ def gather_pool_swim_times
       #remove empty index 0's
       week_dates.shift
       week_lane_swim_times.shift
-      pools_data[pool['name']] = weeks.merge!(week_dates.zip(week_lane_swim_times).to_h)
+      pools_data[pool[:name]] = weeks.merge!(week_dates.zip(week_lane_swim_times).to_h)
+
       end
     end
   end
@@ -100,7 +101,7 @@ def gather_pool_swim_times
   end
 end
 
-gather_pool_urls()
+#gather_pool_urls()
 gather_pool_swim_times()
 
 # Todo
@@ -113,6 +114,7 @@ gather_pool_swim_times()
 
 #Bugs
 
+
 #Done
 #figure out how to split multiple swim times into array
 #loop for multiple weeks
@@ -120,3 +122,4 @@ gather_pool_swim_times()
 #capture indoor pool lists
 #determine output, save as json object or YAML?
 # Pool geocode data - http://www.rubygeocoder.com/
+#can't rely on instance variable, so symbolize_names when grabbing info from JSON
