@@ -33,8 +33,8 @@ def gather_pool_urls()
 
     pool_coordinates ||= []
     pool_addresses.each do |address|
-      #pool_coordinates << Geocoder.coordinates("#{address}, Toronto")
-      pool_coordinates << ['20','20']
+      pool_coordinates << Geocoder.coordinates("#{address}, Toronto")
+      # pool_coordinates << ['20','20']
       puts "Geocoding... #{address}"
     end
   end
@@ -100,7 +100,7 @@ def gather_pool_swim_times
   end
 end
 
-#gather_pool_urls()
+gather_pool_urls()
 gather_pool_swim_times()
 
 # Todo
