@@ -3,20 +3,27 @@ require 'open-uri'
 require 'pry'
 require 'json'
 
-#######Find Indoor Pools#######
+#######Find Some pools#######
 def gather_pool_urls()
   @pool_urls = {}
 
   for i in 0..1
-    url = i == 0 ? "http://www1.toronto.ca/parks/prd/facilities/indoor-pools/index.htm" : "http://www1.toronto.ca/parks/prd/facilities/indoor-pools/2-indoor_pool.htm"
+    url = i == 0 ? "sample_files/indoorpools_1.html" : "sample_files/outdoorpools_1.html"
     doc = Nokogiri::HTML(open(url))
 
     pools = doc.at_css("#pfrBody > div.pfrListing > table > tbody")
-    pool_links = pools.css('a').map { |link| link['href'] }
     pool_names = pools.css('a').map { |link| link.children.text }
+    pool_links = pools.css('a').map { |link| link['href'] }
 
-    @pool_urls.merge!(pool_names.zip(pool_links).to_h)
+    pool_names.each_with_index do |pool, index|
+      current_pool = {}
+      current_pool[:name] = pool_names[index]
+      current_pool[:url] = pool_links[index]
+      @pool_urls[index] = current_pool
+    end
   end
+
+
 
   File.open("pool_urls.json","w") do |f|
     f.write(@pool_urls.to_json)
@@ -31,8 +38,8 @@ def gather_pool_swim_times
   end
 
   @pool_urls.each do |pool|
-    puts "Attempting to scrape: " + pool[0]
-    url = "http://www1.toronto.ca" + pool[1]
+    puts "Attempting to scrape: " + pool[1][:name]
+    url = "http://www1.toronto.ca" + pool[1][:url]
     doc = Nokogiri::HTML(open(url))
 
     weeks = {}
@@ -58,7 +65,7 @@ def gather_pool_swim_times
       #remove empty index 0's
       week_dates.shift
       week_lane_swim_times.shift
-      pools_data[pool[0]] = weeks.merge!(week_dates.zip(week_lane_swim_times).to_h)
+      pools_data[pool[1][:name]] = weeks.merge!(week_dates.zip(week_lane_swim_times).to_h)
       end
     end
   end
@@ -68,7 +75,7 @@ def gather_pool_swim_times
   end
 end
 
-#gather_pool_urls()
+gather_pool_urls()
 gather_pool_swim_times()
 
 # Todo
@@ -80,6 +87,9 @@ gather_pool_swim_times()
 
 #Indoor pools list: http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm
 #Outdoor pools list: http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm
+
+#Bugs
+#Only works with last pool file presently
 
 #Done
 #figure out how to split multiple swim times into array
