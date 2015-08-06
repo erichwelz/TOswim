@@ -7,7 +7,7 @@ require 'geocoder'
 Geocoder.configure(:timeout => 10)
 # Gather the pools
 def gather_pool_urls()
-  @pool_urls = {}
+  @pool_urls = []
 
   # Gather Pool Data
   for i in 0..1
@@ -33,19 +33,20 @@ def gather_pool_urls()
 
     pool_coordinates ||= []
     pool_addresses.each do |address|
-      pool_coordinates << Geocoder.coordinates("#{address}, Toronto")
+      #pool_coordinates << Geocoder.coordinates("#{address}, Toronto")
+      pool_coordinates << ['20','20']
       puts "Geocoding... #{address}"
     end
   end
 
   # Convert Pool Data to Hash
-  pool_names.each_with_index do |pool, index|
+  pool_names.each do |pool|
     current_pool = {}
     current_pool[:name] = pool_names[index]
     current_pool[:url] = pool_links[index]
     current_pool[:address] = pool_addresses[index]
     current_pool[:coordinates] = pool_coordinates[index]
-    @pool_urls[index] = current_pool
+    @pool_urls << current_pool
   end
 
   # Write Hash
@@ -62,8 +63,8 @@ def gather_pool_swim_times
   end
 
   @pool_urls.each do |pool|
-    puts "Attempting to scrape: " + pool[1][:name]
-    url = "http://www1.toronto.ca" + pool[1][:url]
+    puts "Attempting to scrape: " + pool['name']
+    url = "http://www1.toronto.ca" + pool['url']
     doc = Nokogiri::HTML(open(url))
 
     weeks = {}
@@ -89,7 +90,7 @@ def gather_pool_swim_times
       #remove empty index 0's
       week_dates.shift
       week_lane_swim_times.shift
-      pools_data[pool[1][:name]] = weeks.merge!(week_dates.zip(week_lane_swim_times).to_h)
+      pools_data[pool['name']] = weeks.merge!(week_dates.zip(week_lane_swim_times).to_h)
       end
     end
   end
@@ -99,13 +100,11 @@ def gather_pool_swim_times
   end
 end
 
-gather_pool_urls()
-#gather_pool_swim_times()
+#gather_pool_urls()
+gather_pool_swim_times()
 
 # Todo
 # remind self how to log name of vars while blown up (smaller method with info passed in probably!)
-# struct instead of array for pool data?
-# Pool geocode data - http://www.rubygeocoder.com/
 #start displaying, filtering?
 #maybe transform date save
 
@@ -120,3 +119,4 @@ gather_pool_urls()
 #build hashes
 #capture indoor pool lists
 #determine output, save as json object or YAML?
+# Pool geocode data - http://www.rubygeocoder.com/
