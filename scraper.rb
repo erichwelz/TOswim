@@ -34,6 +34,7 @@ def gather_pool_urls()
     pool_coordinates ||= []
     pool_addresses.each do |address|
       pool_coordinates << Geocoder.coordinates("#{address}, Toronto")
+      puts "Geocoding... #{address}"
     end
   end
 
