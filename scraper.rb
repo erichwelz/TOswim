@@ -100,7 +100,6 @@ def gather_pool_swim_times
   # Convert Pool Data to Hash
   @pool_urls.each_with_index do |pool, index|
     current_pool = {}
-    binding.pry if index == 2
 
     #copy existing keys, IE name, url, address, coordinates
     @pool_urls[index].keys.each { |key| current_pool[key] = @pool_urls[index][key] }
