@@ -57,7 +57,7 @@ end
 
 #####Parse Weekly Leisure Swim Data#####
 def gather_pool_swim_times
-  pools_data = {}
+  pools_data = []
   if @pool_urls.nil?
     @pool_urls = JSON.parse(File.read('pool_urls.json'), symbolize_names: true)
   end
@@ -90,18 +90,31 @@ def gather_pool_swim_times
       #remove empty index 0's
       week_dates.shift
       week_lane_swim_times.shift
-      pools_data[pool[:name]] = weeks.merge!(week_dates.zip(week_lane_swim_times).to_h)
 
+      @week_times_and_dates ||= []
+      @week_times_and_dates << weeks.merge!(week_dates.zip(week_lane_swim_times).to_h)
       end
     end
   end
 
+  # Convert Pool Data to Hash
+  @pool_urls.each_with_index do |pool, index|
+    current_pool = {}
+    current_pool[:name] = @pool_urls[index][:name]
+    current_pool[:url] = @pool_urls[index][:url]
+    current_pool[:address] = @pool_urls[index][:address]
+    current_pool[:coordinates] = @pool_urls[index][:coordinates]
+    current_pool[:times] = @week_times_and_dates[index]
+    pools_data << current_pool
+  end
+
   File.open("pools_data.json","w") do |f|
     f.write(pools_data.to_json)
+    puts "Writing pools_data.json complete"
   end
 end
 
-#gather_pool_urls()
+gather_pool_urls()
 gather_pool_swim_times()
 
 # Todo
