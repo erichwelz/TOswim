@@ -9,7 +9,6 @@ require 'geocoder'
 
 Geocoder.configure(:timeout => 10)
 
-
 def swim_time_finder(week, lane_swim_row_index)
   week.at_css("tbody").css('tr')[lane_swim_row_index].children
   .map do |el|
@@ -28,9 +27,9 @@ def build_array_from_html(doc)
 
   for i in 0..1 #eventually poll more weeks, possibly 4 of available 7
     week = doc.at_css("#dropin_Swimming_#{i}")
-    !week.nil?? week_dates = week.at_css('tr').children.map(&:text) : return
+    !week.nil?? week_dates = week.at_css('tr').children.map(&:text) : next
 
-    !week_dates.nil?? lane_swim_row_index = week.at_css("tbody").css('tr').find_index { |el| el.text=~ /Lane Swim/ } : return
+    !week_dates.nil?? lane_swim_row_index = week.at_css("tbody").css('tr').find_index { |el| el.text=~ /Lane Swim/ } : next
 
     if !lane_swim_row_index.nil?
       week_lane_swim_times = swim_time_finder(week, lane_swim_row_index)
@@ -45,6 +44,19 @@ def build_array_from_html(doc)
   end
 end
 
+def build_pool_data_with_times_array()
+  pools_data = []
+  @pool_urls.each_with_index do |pool, index|
+    current_pool = {}
+
+    #copy existing keys, IE name, url, address, coordinates
+    @pool_urls[index].keys.each { |key| current_pool[key] = @pool_urls[index][key] }
+
+    current_pool[:times] = @week_times_and_dates[index]
+    pools_data << current_pool
+  end
+  pools_data
+end
 
 
 # Gather the pools
@@ -103,7 +115,6 @@ end
 
 #####Parse Weekly Leisure Swim Data#####
 def gather_pool_swim_times
-  pools_data = []
   if @pool_urls.nil?
     @pool_urls = JSON.parse(File.read('pool_urls.json'), symbolize_names: true)
   end
@@ -122,19 +133,8 @@ def gather_pool_swim_times
     pool.delete_if { |k, v| v.length == 1 }
   end
 
-  # Convert Pool Data to Hash
-  @pool_urls.each_with_index do |pool, index|
-    current_pool = {}
-
-    #copy existing keys, IE name, url, address, coordinates
-    @pool_urls[index].keys.each { |key| current_pool[key] = @pool_urls[index][key] }
-
-    current_pool[:times] = @week_times_and_dates[index]
-    pools_data << current_pool
-  end
-
   File.open("pools_data.json","w") do |f|
-    f.write(pools_data.to_json)
+    f.write(build_pool_data_with_times_array.to_json)
     puts "Writing pools_data.json complete"
   end
 end
