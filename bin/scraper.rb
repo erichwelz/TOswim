@@ -21,7 +21,7 @@ def swim_time_finder(week, lane_swim_row_index)
   end
 end
 
-def build_array_from_html(doc)
+def build_pool_schedule_array_from_html(doc)
   weeks = {}
 
   for i in 0..1 #eventually poll more weeks, possibly 4 of available 7
@@ -40,6 +40,12 @@ def build_array_from_html(doc)
       @week_times_and_dates ||= []
       @week_times_and_dates << weeks.merge!(week_dates.zip(week_lane_swim_times).to_h)
     end
+  end
+
+  # remove days with no swim times
+  @week_times_and_dates.each do |pool|
+    # empty days return a single special character
+    pool.delete_if { |k, v| v.length == 1 }
   end
 end
 
@@ -115,14 +121,9 @@ def gather_pool_swim_times
     puts "Attempting to scrape: " + pool[:name]
     url = "http://www1.toronto.ca" + pool[:url]
     doc = Nokogiri::HTML(open(url))
-    build_array_from_html(doc)
+    build_pool_schedule_array_from_html(doc)
   end
 
-  # remove days with no swim times
-  @week_times_and_dates.each do |pool|
-    # empty days return a single special character
-    pool.delete_if { |k, v| v.length == 1 }
-  end
 
   File.open("pools_data.json","w") do |f|
     f.write(build_pool_data_with_times_array.to_json)
