@@ -21,7 +21,6 @@ def swim_time_finder(week, lane_swim_row_index)
   end
 end
 
-
 def build_array_from_html(doc)
   weeks = {}
 
@@ -45,17 +44,10 @@ def build_array_from_html(doc)
 end
 
 def build_pool_data_with_times_array()
-  pools_data = []
-  @pool_urls.each_with_index do |pool, index|
-    current_pool = {}
-
-    #copy existing keys, IE name, url, address, coordinates
-    @pool_urls[index].keys.each { |key| current_pool[key] = @pool_urls[index][key] }
-
-    current_pool[:times] = @week_times_and_dates[index]
-    pools_data << current_pool
+  @pool_urls.map.with_index do |pool, index|
+    pool[:times] = @week_times_and_dates[index]
+    pool
   end
-  pools_data
 end
 
 
@@ -87,7 +79,7 @@ def gather_pool_urls()
 
     # Geotag pools
     pool_coordinates ||= []
-    pool_addresses.first(5).each do |address|
+    pool_addresses.first(3).each do |address|
 
       coordinates_arr = Geocoder.coordinates("#{address}, Toronto")
       pool_coordinates << { latitude: coordinates_arr[0], longitude: coordinates_arr[1] }
@@ -98,7 +90,7 @@ def gather_pool_urls()
   end
 
   # Convert Pool Data to Hash
-  pool_names.first(5).each_with_index do |pool, index|
+  pool_names.first(3).each_with_index do |pool, index|
     current_pool = {}
     current_pool[:name] = pool_names[index]
     current_pool[:url] = pool_links[index]
@@ -123,7 +115,6 @@ def gather_pool_swim_times
     puts "Attempting to scrape: " + pool[:name]
     url = "http://www1.toronto.ca" + pool[:url]
     doc = Nokogiri::HTML(open(url))
-
     build_array_from_html(doc)
   end
 
