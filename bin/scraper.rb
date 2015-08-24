@@ -29,33 +29,21 @@ def build_pool_schedule_array_from_html(doc)
     !week.nil?? week_dates = week.at_css('tr').children.map(&:text) : next
 
     !week_dates.nil?? lane_swim_row_index = week.at_css("tbody").css('tr').find_index { |el| el.text=~ /Lane Swim/ } : next
+    # remove empty index 0
+    week_dates.shift
 
     if !lane_swim_row_index.nil?
       week_lane_swim_times = swim_time_finder(week, lane_swim_row_index)
-
-      #remove empty index 0's
-      week_dates.shift
+      # remove empty index 0
       week_lane_swim_times.shift
-
-      @week_times_and_dates ||= []
-      @week_times_and_dates << weeks.merge!(week_dates.zip(week_lane_swim_times).to_h)
+      weeks.merge!(week_dates.zip(week_lane_swim_times).to_h)
     end
   end
 
-  # remove days with no swim times
-  @week_times_and_dates.each do |pool|
-    # empty days return a single special character
-    pool.delete_if { |k, v| v.length == 1 }
-  end
+  # remove days with no swim times - empty days return a single special character
+  weeks.delete_if { |k, v| v.length == 1 }
+  # weeks
 end
-
-def build_pool_data_with_times_array()
-  @pool_urls.map.with_index do |pool, index|
-    pool[:times] = @week_times_and_dates[index]
-    pool
-  end
-end
-
 
 # Gather the pools
 def gather_pool_urls()
@@ -121,12 +109,12 @@ def gather_pool_swim_times
     puts "Attempting to scrape: " + pool[:name]
     url = "http://www1.toronto.ca" + pool[:url]
     doc = Nokogiri::HTML(open(url))
-    build_pool_schedule_array_from_html(doc)
+    pool[:times] = build_pool_schedule_array_from_html(doc)
   end
 
 
   File.open("pools_data.json","w") do |f|
-    f.write(build_pool_data_with_times_array.to_json)
+    f.write(@pool_urls.to_json)
     puts "Writing pools_data.json complete"
   end
 end
