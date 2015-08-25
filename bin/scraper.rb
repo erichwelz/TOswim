@@ -42,48 +42,42 @@ end
 
 # Gather the pools
 def gather_pool_urls()
-  @pool_urls = []
+  @pool_urls, @pool_names, @pool_addresses, @pool_links = [],[],[],[]
 
   # Gather Pool Data
-  for i in 0..1
-    url = i == 0 ? "sample_files/indoorpools_1.html" : "sample_files/outdoorpools_1.html"
+  urls = ["sample_files/indoorpools_1.html","sample_files/indoorpools_2.html",
+          "sample_files/outdoorpools_1.html","sample_files/outdoorpools_2.html"]
+  urls.each do |url|
     doc = Nokogiri::HTML(open(url))
-
     pools = doc.at_css("#pfrBody > div.pfrListing > table > tbody")
+    @pool_names += pools.css('a').map { |link| link.children.text }
+    @pool_links += pools.css('a').map { |link| link['href'] }
 
-    pool_names ||= []
-    pool_names += pools.css('a').map { |link| link.children.text }
-
-    pool_links ||= []
-    pool_links += pools.css('a').map { |link| link['href'] }
-
-    pool_addresses ||= []
     address_index_incrementer = pools.css('td').length / pools.css('tr').length
     pools.css('td').each_with_index do |node, index|
       # Address is always second column, table width varies for indoor vs. outdoor
       if index == 1 || (index % address_index_incrementer == 1)
-        pool_addresses << node.text
+        @pool_addresses << node.text
       end
-    end
-
-    # Geotag pools
-    pool_coordinates ||= []
-    pool_addresses.first(3).each do |address|
-
-      coordinates_arr = Geocoder.coordinates("#{address}, Toronto")
-      pool_coordinates << { latitude: coordinates_arr[0], longitude: coordinates_arr[1] }
-
-      # pool_coordinates << { latitude: 50.123, longitude: 50.12 }
-      puts "Geocoding... #{address}"
     end
   end
 
+  # Geotag pools
+  pool_coordinates ||= []
+  @pool_addresses.each do |address|
+    # coordinates_arr = Geocoder.coordinates("#{address}, Toronto")
+    # pool_coordinates << { latitude: coordinates_arr[0], longitude: coordinates_arr[1] }
+
+    pool_coordinates << { latitude: 50.123, longitude: 50.12 }
+    puts "Geocoding... #{address}"
+  end
+
   # Convert Pool Data to Hash
-  pool_names.first(3).each_with_index do |pool, index|
+  @pool_names.each_with_index do |pool, index|
     current_pool = {}
-    current_pool[:name] = pool_names[index]
-    current_pool[:url] = pool_links[index]
-    current_pool[:address] = pool_addresses[index]
+    current_pool[:name] = @pool_names[index]
+    current_pool[:url] = @pool_links[index]
+    current_pool[:address] = @pool_addresses[index]
     current_pool[:coordinates] = pool_coordinates[index]
     @pool_urls << current_pool
   end
@@ -106,7 +100,6 @@ def gather_pool_swim_times
     doc = Nokogiri::HTML(open(url))
     pool[:times] = build_pool_schedule_array_from_html(doc)
   end
-
 
   File.open("pools_data.json","w") do |f|
     f.write(@pool_urls.to_json)
