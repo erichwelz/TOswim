@@ -65,11 +65,14 @@ def gather_pool_urls()
   # Geotag pools
   pool_coordinates ||= []
   @pool_addresses.each do |address|
-    # coordinates_arr = Geocoder.coordinates("#{address}, Toronto")
-    # pool_coordinates << { latitude: coordinates_arr[0], longitude: coordinates_arr[1] }
+    coordinates_arr = Geocoder.coordinates("#{address}, Toronto")
+    pool_coordinates << { latitude: coordinates_arr[0], longitude: coordinates_arr[1] }
 
-    pool_coordinates << { latitude: 50.123, longitude: 50.12 }
+    # pool_coordinates << { latitude: 50.123, longitude: 50.12 }
     puts "Geocoding... #{address}"
+
+    # To avoid triggering google API limit of 10 queries per second
+    sleep(0.15)
   end
 
   # Convert Pool Data to Hash
