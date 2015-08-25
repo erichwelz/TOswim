@@ -45,8 +45,11 @@ def gather_pool_urls()
   @pool_urls, @pool_names, @pool_addresses, @pool_links = [],[],[],[]
 
   # Gather Pool Data
-  urls = ["sample_files/indoorpools_1.html","sample_files/indoorpools_2.html",
-          "sample_files/outdoorpools_1.html","sample_files/outdoorpools_2.html"]
+  urls = ["http://www1.toronto.ca/parks/prd/facilities/indoor-pools/index.htm",
+          "http://www1.toronto.ca/parks/prd/facilities/indoor-pools/2-indoor_pool.htm",
+          "http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm",
+          "http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/2-outdoor_pool.htm"]
+
   urls.each do |url|
     doc = Nokogiri::HTML(open(url))
     pools = doc.at_css("#pfrBody > div.pfrListing > table > tbody")
