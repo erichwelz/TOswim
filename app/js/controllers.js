@@ -1,6 +1,6 @@
 var TOswimApp = angular.module('TOswimApp', []);
 
-phonecatApp.controller('PoolListCtrl', function ($scope) {
+TOswimApp.controller('PoolListCtrl', function ($scope) {
   $scope.pools = [
     {'name': 'Nexus S',
      'snippet': 'Fast just got faster with Nexus S.'},
