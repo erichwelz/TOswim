@@ -1,2 +1,7 @@
-sample_files/
-*.json
+logs/*
+!.gitkeep
+node_modules/
+tmp
+.idea
+.DS_Store
+bower_components/
