@@ -1,3 +1,7 @@
+'use strict';
+
+// Controllers
+
 var TOswimApp = angular.module('TOswimApp', []);
 
 TOswimApp.controller('PoolListCtrl', function ($scope) {
