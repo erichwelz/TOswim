@@ -16,6 +16,11 @@
       <!-- Sidebar content -->
 
       Search: <input ng-model="query">
+      Sort by:
+      <select ng-model="orderprop">
+        <option value="name">Alphabetical</option>
+        <option value="age">Newest</option>
+      </select>
 
     </div>
   </div>
@@ -24,7 +29,7 @@
     <!-- Body content -->
     <p>Matches: {{(pools | filter:query).length}}</p>
     <ul class="pools">
-      <li ng-repeat="pool in pools | filter:query">
+      <li ng-repeat="pool in pools | filter:query | orderBy:orderProp">
         <span>{{pool.name}}</span>
         <p>{{pool.snippet}}</p>
       </li>
