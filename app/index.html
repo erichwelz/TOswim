@@ -21,8 +21,8 @@
   </div>
 
   <div class="col-md-10">
-  <!-- Body content -->
-    <p>Matches: {{(pools|filter:query).length}}</p>
+    <!-- Body content -->
+    <p>Matches: {{(pools | filter:query).length}}</p>
     <ul class="pools">
       <li ng-repeat="pool in pools | filter:query">
         <span>{{pool.name}}</span>
