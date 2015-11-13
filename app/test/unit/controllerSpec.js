@@ -9,6 +9,6 @@ describe ('PoolListCtrl', function() {
       ctrl = $controller('PoolListCtrl', {$scope:scope});
 
       expect(scope.pools.length).toBe(3);
-    });
+  }));
 
 });

@@ -1,14 +1,14 @@
 <!doctype html>
-<html lang="en" ng-app="TOswimApp">
+<html lang="en" ng-app="TOswimApp" ng-controller="PoolListCtrl">
 <head>
   <meta charset="utf-8">
-  <title>TO Swim</title>
+  <title>TO Swim: {{query}}</title>
   <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
   <link rel="stylesheet" href="css/app.css">
   <script src="bower_components/angular/angular.js"></script>
   <script src="js/controllers.js"></script>
 </head>
-<body ng-controller="PoolListCtrl">
+<body>
   <p>Total number of pools: {{pools.length}}</p>
 
   <div class="container-fluid">
