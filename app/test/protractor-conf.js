@@ -5,7 +5,6 @@ exports.config = {
     'e2e/*.js'
   ],
 
-
   capabilities: {
     'browserName': 'chrome'
   },
