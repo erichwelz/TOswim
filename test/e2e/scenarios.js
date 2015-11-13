@@ -31,5 +31,31 @@ describe('TOSwim App', function() {
       query.sendKeys('nexus');
       expect(browser.getTitle()).toMatch(/TO Swim: nexus$/);
     });
+
+    it('should be possible to control pool order via the drop down select box', function() {
+
+      var poolNameColumn = element.all(by.repeater('pool in pools').column('pool.name'));
+      var query = element(by.model('query'));
+
+      function getNames() {
+        return poolNameColumn.map(function(elm) {
+          return elm.getText();
+        });
+      }
+
+      query.sendKeys('tablet'); //narrowing dataset to make test assertions shorter
+
+      expect(getNames()).toEqual([
+        "Motorola XOOM\u2122 with Wi-Fi",
+        "MOTOROLA XOOM\u2122"
+      ]);
+
+      element(by.model('orderProp')).element(by.css('option[value="name"]')).click();
+
+      expect(getNames()).toEqual([
+        "MOTOROLA XOOM\u2122",
+        "Motorola XOOM\u2122 with Wi-Fi"
+      ]);
+    });
   });
 });
