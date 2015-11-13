@@ -9,12 +9,27 @@
   <script src="js/controllers.js"></script>
 </head>
 <body ng-controller="PoolListCtrl">
-  <ul>
-    <li ng-repeat="pool in pools">
-      <span>{{pool.name}}</span>
-      <p>{{pool.snippet}}</p>
-    </li>
-  </ul>
+  <p>Total number of pools: {{pools.length}}</p>
 
+  <div class="container-fluid">
+    <div class="col-md-2">
+      <!-- Sidebar content -->
+
+      Search: <input ng-model="query">
+
+    </div>
+  </div>
+
+  <div class="col-md-10">
+  <!-- Body content -->
+    <p>Matches: {{(pools|filter:query).length}}</p>
+    <ul class="pools">
+      <li ng-repeat="pool in pools | filter:query">
+        <span>{{pool.name}}</span>
+        <p>{{pool.snippet}}</p>
+      </li>
+    </ul>
+
+  </div>
 </body>
 </html>
