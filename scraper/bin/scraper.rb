@@ -14,7 +14,7 @@ def swim_time_finder(week, lane_swim_row_index)
   .map do |el|
     nodes = el.children.find_all(&:text?)
     if nodes.length == 1
-      nodes = el.children.text
+      nodes = [el.children.text]
     else
       nodes.map!(&:text)
     end
@@ -37,7 +37,7 @@ def build_pool_schedule_array_from_html(doc)
   end
 
   # remove days with no swim times
-  weeks.delete_if { |k, v| v.length <= 1 }
+  weeks.delete_if { |day| day.length <= 1 }
 end
 
 # Gather the pools
@@ -97,7 +97,7 @@ end
 #####Parse Weekly Leisure Swim Data#####
 def gather_pool_swim_times
   if @pool_urls.nil?
-    @pool_urls = JSON.parse(File.read('pool_urls.json'), symbolize_names: true)
+    @pool_urls = JSON.parse(File.read('pool_urls_subset.json'), symbolize_names: true)
   end
 
   @pool_urls.each do |pool|
@@ -113,7 +113,7 @@ def gather_pool_swim_times
   end
 end
 
-gather_pool_urls()
+# gather_pool_urls()
 gather_pool_swim_times()
 
 

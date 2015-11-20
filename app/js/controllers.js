@@ -5,7 +5,7 @@
 var TOswimApp = angular.module('TOswimApp', []);
 
 TOswimApp.controller('PoolListCtrl', ['$scope', '$http', function ($scope, $http) {
-  $http.get('../scraper/pools_data.json').success(function(data) {
+  $http.get('../scraper/bin/pools_data.json').success(function(data) {
     $scope.pools = data;
     });
 
