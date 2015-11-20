@@ -15,7 +15,9 @@
     <div class="col-md-2">
       <!-- Sidebar content -->
 
-      Search: <input ng-model="query">
+      <label>Universal search: <input ng-model="query.$"></label>
+      <label>By time: <input ng-model="query.times.$"></label>
+
       Sort by:
       <select ng-model="orderProp">
         <option value="address">Pool Address</option>
@@ -29,7 +31,7 @@
     <!-- Body content -->
     <p>Matches: {{(pools | filter:query).length}}</p>
     <ul class="pools">
-      <li ng-repeat="pool in pools | filter:query | orderBy:orderProp">
+      <li ng-repeat="pool in pools | filter:query | orderBy:orderProp | limitTo:quantity ">
         <span>{{pool.name}}</span><br />
         <span>Address: {{pool.address}}</span><br>
         <span>Pool Coordinates</span>
@@ -39,7 +41,7 @@
           </ul>
           <span> Swim Times</span>
           <ul>
-            <li ng-repeat="(date, times) in pool.times">{{date}}
+            <li ng-repeat="(date, times) in pool.times ">{{date}}
               <ul>
                 <li ng-repeat="time in times"> {{time}}</li>
               </ul>
