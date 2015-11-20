@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Regent Park Aquatic Centre",
+    "url": "/parks/prd/facilities/complex/2012/index.htm",
+    "address": "640 Dundas St E",
+    "coordinates": {
+      "latitude": 43.6606511,
+      "longitude": -79.3605636
+    }
+  },
+  {
+    "name": "Fairhaven Park Outdoor Pool",
+    "url": "/parks/prd/facilities/complex/887/index.htm#pfrComplexTabs-dropin",
+    "address": "100 Golfwood Hts",
+    "coordinates": {
+      "latitude": 43.7028495,
+      "longitude": -79.5457825
+    }
+  }
+]
