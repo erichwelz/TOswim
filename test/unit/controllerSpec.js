@@ -14,7 +14,7 @@ describe('TOSwim controllers', function() {
     beforeEach(inject(function(_$httpBackend_, $rootScope, $controller) {
       $httpBackend = _$httpBackend_;
       $httpBackend.expectGET('../scraper/phones.json').
-        respond([{name: 'Nexus S'}, {name: 'Motorola DROID'}]);
+        respond([{name: 'Agincourt Recreation Centre'}, {name: 'Albert Campbell Collegiate Institute'}]);
 
       scope = $rootScope.$new();
       ctrl = $controller('PoolListCtrl', {$scope:scope});
@@ -26,13 +26,13 @@ describe('TOSwim controllers', function() {
       expect(scope.pools).toBeUndefined();
       $httpBackend.flush();
 
-      expect(scope.pools).toEqual([{name: 'Nexus S'},
-                                   {name: 'Motorola DROID'}]);
+      expect(scope.pools).toEqual([{name: 'Agincourt Recreation Centre'},
+                                   {name: 'Albert Campbell Collegiate Institute'}]);
     });
 
 
     it('should set the default value of orderProp model', function() {
-      expect(scope.orderProp).toBe('age');
+      expect(scope.orderProp).toBe('address');
     });
   });
 });

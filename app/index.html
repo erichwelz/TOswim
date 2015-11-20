@@ -18,8 +18,8 @@
       Search: <input ng-model="query">
       Sort by:
       <select ng-model="orderProp">
-        <option value="name">Alphabetical</option>
-        <option value="age">Newest</option>
+        <option value="address">Pool Address</option>
+        <option value="name">Pool Name</option>
       </select>
 
     </div>
@@ -30,8 +30,13 @@
     <p>Matches: {{(pools | filter:query).length}}</p>
     <ul class="pools">
       <li ng-repeat="pool in pools | filter:query | orderBy:orderProp">
-        <span>{{pool.name}}</span>
-        <p>{{pool.snippet}}</p>
+        <span>{{pool.name}}</span><br />
+        <span>Address: {{pool.address}}</span><br>
+        <span>Pool Coordinates</span>
+          <ul>
+            <li>Lat: {{pool.coordinates.latitude}}</li>
+            <li>Long: {{pool.coordinates.longitude}}</li>
+          </ul>
       </li>
     </ul>
 
