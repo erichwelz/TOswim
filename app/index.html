@@ -37,6 +37,12 @@
             <li>Lat: {{pool.coordinates.latitude}}</li>
             <li>Long: {{pool.coordinates.longitude}}</li>
           </ul>
+          <span> Swim Times</span>
+          <dl>
+            <dt>Time</dt>
+            <dd ng-repeat="time in pool.times">{{time}}</dd>
+          </dl>
+
       </li>
     </ul>
 
