@@ -2,7 +2,13 @@
 
 // Controllers
 
-var TOswimApp = angular.module('TOswimApp', []);
+var TOswimApp = angular.module('TOswimApp', [])
+  // allow DI for use in controllers, unit tests
+  .constant('_', window._)
+  // use in views, ng-repeat="x in _.range(3)"
+  .run(function ($rootScope) {
+     $rootScope._ = window._;
+  });
 
 TOswimApp.controller('PoolListCtrl', ['$scope', '$http', function ($scope, $http) {
   $http.get('../scraper/bin/pools_data.json').success(function(data) {
