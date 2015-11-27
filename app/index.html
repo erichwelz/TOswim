@@ -15,8 +15,12 @@
     <div class="col-md-2">
       <!-- Sidebar content -->
 
-      <label>Universal search: <input ng-model="query.$"></label>
-      <label>By time: <input ng-model="query.times.$"></label>
+      <label>Universal search: <input ng-model="query"></label>
+
+      <b>Times:</b>
+      <div ng-repeat="date in getTimes()">
+          <b><input type="checkbox" ng-model="filter[date]" /> {{date}}</b>
+      </div>
 
       Sort by:
       <select ng-model="orderProp">
@@ -29,9 +33,9 @@
 
   <div class="col-md-10">
     <!-- Body content -->
-    <p>Matches: {{(pools | filter:query).length}}</p>
+    <p>Matches: {{filtered.length}}</p>
     <ul class="pools">
-      <li ng-repeat="pool in pools | filter:query | orderBy:orderProp | limitTo:quantity ">
+      <li ng-repeat="pool in filtered=(pools | filter:filterByTime) | orderBy:orderProp | limitTo:quantity">
         <span>{{pool.name}}</span><br />
         <span>Address: {{pool.address}}</span><br>
         <span>Pool Coordinates</span>

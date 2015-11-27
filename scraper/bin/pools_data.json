@@ -7,11 +7,7 @@
       "latitude": 43.6606511,
       "longitude": -79.3605636
     },
-    "times": {
-      "date1": 100,
-      "date2": 150,
-      "date3": 200
-    }
+    "times": "date1"
   },
   {
     "name": "Weston Collegiate Institute",
@@ -21,9 +17,6 @@
       "latitude": 43.7037466,
       "longitude": -79.509666
     },
-    "times": {
-      "date1": "Tue Nov 17",
-      "date2": "Tue Nov 24"
-    }
+    "times": "Tue Nov 17"
   }
 ]
