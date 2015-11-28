@@ -40,6 +40,7 @@
       <li ng-repeat="pool in filtered=(pools | filter:filterByTime) | orderBy:orderProp | limitTo:quantity">
         <span>{{pool.name}}</span><br />
         <span>Address: {{pool.address}}</span><br>
+        <span>Distance: {{getDistance(pool.coordinates.latitude, pool.coordinates.longitude)}} KM </span><br>
         <span>Pool Coordinates</span>
           <ul>
             <li>Lat: {{pool.coordinates.latitude}}</li>
