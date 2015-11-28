@@ -16,7 +16,7 @@ TOswimApp.controller('PoolListCtrl', ['$scope', '$http', function ($scope, $http
     });
 
   var default_date_filter = {};
-  default_date_filter[dateMaker().toString()] = true;
+  default_date_filter[undefined] = dateMaker().toString();
   $scope.filter = default_date_filter; //sets default scope to 'today'
 
   $scope.getDates = function() {
@@ -25,22 +25,13 @@ TOswimApp.controller('PoolListCtrl', ['$scope', '$http', function ($scope, $http
 
   $scope.filterByTime = function ( pool) {
     // return all pools matching checked date, default to all dates
-    // return Object.keys(pool.times).indexOf("Fri Nov 27") > -1;
 
-    var dates = _.forEach($scope.filter, function(value, key) {
-      // when dates are unchecked, the date remained with a propery of false
-      if (value === false) {
-        delete $scope.filter[key];
-      }
-    });
-    var dates_str = Object.keys(dates).toString();
+    var selected_date = $scope.filter[undefined];
 
-    // only allows selection of a single date at one time
-    return Object.keys(pool.times).indexOf(dates_str) > -1 || noFilter($scope.filter);
-    // return $scope.filter[pool.times] || noFilter($scope.filter);
+    return Object.keys(pool.times).indexOf(selected_date) > -1 || noFilter($scope.filter);
   };
 
-  $scope.orderProp = 'address'; //sets default for orderProp scope
+  $scope.orderProp = 'name'; //sets default for orderProp scope
 
   function dateMaker(days) {
     // returns array of dates in format of "Fri Nov 27" starting with today

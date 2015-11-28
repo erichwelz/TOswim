@@ -19,15 +19,16 @@
 
       <label>Universal search: <input ng-model="query"></label>
 
-      <div ng-repeat="date in getDates()">
-          <b><input type="checkbox" ng-model="filter[date]" /> {{date}}</b>
-      </div>
+  Date:
+  <select name="repeatSelect" id="repeatSelect" ng-model="filter[date]">
+   <option ng-repeat="date in getDates()" value="{{date}}">{{date}}</option>
+  </select>
 
-      Sort by:
-      <select ng-model="orderProp">
-        <option value="address">Pool Address</option>
-        <option value="name">Pool Name</option>
-      </select>
+  Sort by:
+  <select ng-model="orderProp">
+    <option value="name">Pool Name</option>
+    <option value="address">Pool Address</option>
+  </select>
 
     </div>
   </div>
