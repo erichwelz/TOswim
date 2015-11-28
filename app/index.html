@@ -8,6 +8,7 @@
   <script src="bower_components/angular/angular.js"></script>
   <script src="bower_components/lodash/lodash.js"></script>
   <script src="js/controllers.js"></script>
+  <script src="js/filters.js"></script>
 </head>
 <body>
   <p>Total number of pools: {{pools.length}}</p>
@@ -45,7 +46,7 @@
           </ul>
           <span> Swim Times</span>
           <ul>
-            <li ng-repeat="(date, times) in pool.times ">{{date}}
+            <li ng-repeat="(date, times) in pool.times | limitKeysTo:5">{{date}}
               <ul>
                 <li ng-repeat="time in times"> {{time}}</li>
               </ul>
