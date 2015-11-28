@@ -16,7 +16,7 @@ TOswimApp.controller('PoolListCtrl', ['$scope', '$http', function ($scope, $http
     });
 
   var default_date_filter = {};
-  default_date_filter[dateMaker()] = true;
+  default_date_filter[dateMaker().toString()] = true;
   $scope.filter = default_date_filter; //sets default scope to 'today'
 
   $scope.getDates = function() {
@@ -43,22 +43,20 @@ TOswimApp.controller('PoolListCtrl', ['$scope', '$http', function ($scope, $http
   $scope.orderProp = 'address'; //sets default for orderProp scope
 
   function dateMaker(days) {
-    // returns string of today's date or array of number of days in format "Fri Nov 27"
-    var date = new Date();
+    // returns array of dates in format of "Fri Nov 27" starting with today
+    if (isNaN(days) === true) {
+      days = 1;
+    }
+
+    var dates = [];
     var regex = /^\w{3}\s\w{3}\s\d{1,2}/;
 
-    if (days === 1 || days === undefined ) {
-      return date.toString().match( regex ).toString();
-    } else {
-      var dates = [];
-      // set day 1
+    for (var day = 0; day < days; day++ ) {
+      var date = new Date();
+      date.setDate(date.getDate() + day);
       dates.push(date.toString().match( regex ).toString());
-      for (var day = 2; day <= days; day++ ) {
-        date.setDate(date.getDate() + 1);
-        dates.push(date.toString().match( regex ).toString());
-      }
-      return dates;
     }
+    return dates;
   }
 
   function noFilter(filterObj) {
