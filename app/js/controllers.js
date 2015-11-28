@@ -15,10 +15,15 @@ TOswimApp.controller('PoolListCtrl', ['$scope', '$http', function ($scope, $http
     $scope.pools = data;
     });
 
-  $scope.filter = {};
+  var default_date_filter = {};
+  default_date_filter[todayMaker()] = true;
+  $scope.filter = default_date_filter; //sets default scope to 'today'q
 
   $scope.getTimes = function() {
-    return ["Fri Nov 27","Tue Jan 05"] ;
+    var dates = [];
+    dates.push(todayMaker());
+    dates.push("Tue Jan 05");
+    return dates ;
   };
   // // likely unecessary, ultimately it would allow for understanding the available dates
   // $scope.getTimes = function () {
@@ -46,6 +51,14 @@ TOswimApp.controller('PoolListCtrl', ['$scope', '$http', function ($scope, $http
     // return $scope.filter[pool.times] || noFilter($scope.filter);
   };
 
+  $scope.orderProp = 'address'; //sets default for orderProp scope
+
+  function todayMaker() {
+    // returns string of today's date in format "Fri Nov 27"
+    var date = new Date();
+    var regex = /^\w{3}\s\w{3}\s\d{1,2}/;
+    return date.toString().match( regex ).toString();
+  }
 
   function noFilter(filterObj) {
     for (var key in filterObj) {
@@ -55,6 +68,4 @@ TOswimApp.controller('PoolListCtrl', ['$scope', '$http', function ($scope, $http
     }
     return true;
   }
-
-  $scope.orderProp = 'address'; //sets default for orderProp scope
 }]);
