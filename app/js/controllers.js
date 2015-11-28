@@ -16,23 +16,12 @@ TOswimApp.controller('PoolListCtrl', ['$scope', '$http', function ($scope, $http
     });
 
   var default_date_filter = {};
-  default_date_filter[todayMaker()] = true;
-  $scope.filter = default_date_filter; //sets default scope to 'today'q
+  default_date_filter[dateMaker()] = true;
+  $scope.filter = default_date_filter; //sets default scope to 'today'
 
-  $scope.getTimes = function() {
-    var dates = [];
-    dates.push(todayMaker());
-    dates.push("Tue Jan 05");
-    return dates ;
+  $scope.getDates = function() {
+    return dateMaker(7) ;
   };
-  // // likely unecessary, ultimately it would allow for understanding the available dates
-  // $scope.getTimes = function () {
-  //   return ($scope.pools || []).map(function (pool) {
-  //     return Object.keys(pool.times);
-  //   }).filter(function ( pool, idx, arr) {
-  //     return arr.indexOf(pool) == idx;
-  //   });
-  // };
 
   $scope.filterByTime = function ( pool) {
     // return all pools matching checked date, default to all dates
@@ -53,11 +42,23 @@ TOswimApp.controller('PoolListCtrl', ['$scope', '$http', function ($scope, $http
 
   $scope.orderProp = 'address'; //sets default for orderProp scope
 
-  function todayMaker() {
-    // returns string of today's date in format "Fri Nov 27"
+  function dateMaker(days) {
+    // returns string of today's date or array of number of days in format "Fri Nov 27"
     var date = new Date();
     var regex = /^\w{3}\s\w{3}\s\d{1,2}/;
-    return date.toString().match( regex ).toString();
+
+    if (days === 1 || days === undefined ) {
+      return date.toString().match( regex ).toString();
+    } else {
+      var dates = [];
+      // set day 1
+      dates.push(date.toString().match( regex ).toString());
+      for (var day = 2; day <= days; day++ ) {
+        date.setDate(date.getDate() + 1);
+        dates.push(date.toString().match( regex ).toString());
+      }
+      return dates;
+    }
   }
 
   function noFilter(filterObj) {

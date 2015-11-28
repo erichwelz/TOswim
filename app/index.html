@@ -18,8 +18,7 @@
 
       <label>Universal search: <input ng-model="query"></label>
 
-      <b>Times:</b>
-      <div ng-repeat="date in getTimes()">
+      <div ng-repeat="date in getDates()">
           <b><input type="checkbox" ng-model="filter[date]" /> {{date}}</b>
       </div>
 
