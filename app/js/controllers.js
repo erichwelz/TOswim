@@ -50,7 +50,7 @@ TOswimApp.controller('PoolListCtrl', ['$scope', '$http', function ($scope, $http
     return dates;
   }
 
-  $scope.getDistance = function distance(lat1, lon1, lat2, lon2) {
+  $scope.getDistance = function (lat1, lon1, lat2, lon2) {
   if (isNaN(lat2) === true) {
     lat2 = 43.6792740; //my latitude
   }
