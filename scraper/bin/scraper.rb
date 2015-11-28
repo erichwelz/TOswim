@@ -97,7 +97,7 @@ end
 #####Parse Weekly Leisure Swim Data#####
 def gather_pool_swim_times
   if @pool_urls.nil?
-    @pool_urls = JSON.parse(File.read('pool_urls_subset.json'), symbolize_names: true)
+    @pool_urls = JSON.parse(File.read('pool_urls.json'), symbolize_names: true)
   end
 
   @pool_urls.each do |pool|
