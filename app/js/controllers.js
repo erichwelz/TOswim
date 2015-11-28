@@ -31,9 +31,18 @@ TOswimApp.controller('PoolListCtrl', ['$scope', '$http', function ($scope, $http
 
   $scope.filterByTime = function ( pool) {
     // return all pools matching checked date, default to all dates
-    debugger;
     // return Object.keys(pool.times).indexOf("Fri Nov 27") > -1;
-    return Object.keys(pool.times).indexOf(Object.keys($scope.filter).toString()) > -1 || noFilter($scope.filter);
+
+    var dates = _.forEach($scope.filter, function(value, key) {
+      // when dates are unchecked, the date remained with a propery of false
+      if (value === false) {
+        delete $scope.filter[key];
+      }
+    });
+    var dates_str = Object.keys(dates).toString();
+
+    // only allows selection of a single date at one time
+    return Object.keys(pool.times).indexOf(dates_str) > -1 || noFilter($scope.filter);
     // return $scope.filter[pool.times] || noFilter($scope.filter);
   };
 
