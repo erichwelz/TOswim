@@ -37,10 +37,14 @@
     <!-- Body content -->
     <p>Matches: {{filtered.length}}</p>
     <ul class="pools">
-      <li ng-repeat="pool in filtered=(pools | filter:filterByTime) | orderBy:orderProp | limitTo:quantity">
+      <li ng-repeat="pool in filtered=(pools | filter:filterByTime) | orderBy:distanceSort | limitTo:quantity">
         <span>{{pool.name}}</span><br />
         <span>Address: {{pool.address}}</span><br>
         <span>Distance: {{getDistance(pool.coordinates.latitude, pool.coordinates.longitude) | number: 1}} KM </span><br>
+        <!-- <ul>
+          <li>Lat: {{pool.coordinates.latitude}}</li>
+          <li>Long: {{pool.coordinates.longitude}}</li>
+        </ul> -->
           <span> Swim Times</span>
           <ul>
             <li ng-repeat="(date, times) in pool.times | limitKeysTo:5">{{date}}
