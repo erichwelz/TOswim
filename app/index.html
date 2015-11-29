@@ -30,7 +30,7 @@
     <!-- Body content -->
     <p>Matches: {{filtered.length}}</p>
     <ul class="pools">
-      <li ng-repeat="pool in pools | filter:query | filter:filterByDate  | orderBy:distanceSort">
+      <li ng-repeat="pool in filtered=(pools | filter:query | filter:filterByDate) | orderBy:distanceSort">
         <span>{{pool.name}}</span><br />
         <span>Address: {{pool.address}}</span><br>
         <span>Distance: {{getDistance(pool.coordinates.latitude, pool.coordinates.longitude) | number: 1}} KM </span><br>
@@ -41,8 +41,7 @@
                 <li ng-repeat="time in times"> {{time}}</li>
               </ul>
             </li>
-          </ul
-
+          </ul>
       </li>
     </ul>
 
