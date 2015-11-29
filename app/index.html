@@ -24,12 +24,6 @@
    <option ng-repeat="date in getDates()" value="{{date}}">{{date}}</option>
   </select>
 
-  Sort by:
-  <select ng-model="orderProp">
-    <option value="name">Pool Name</option>
-    <option value="address">Pool Address</option>
-  </select>
-
     </div>
   </div>
 
@@ -37,7 +31,7 @@
     <!-- Body content -->
     <p>Matches: {{filtered.length}}</p>
     <ul class="pools">
-      <li ng-repeat="pool in filtered=(pools | filter:filterByTime) | orderBy:distanceSort | limitTo:quantity">
+      <li ng-repeat="pool in filtered=(pools | filter:filterByDate) | orderBy:distanceSort | limitTo:quantity">
         <span>{{pool.name}}</span><br />
         <span>Address: {{pool.address}}</span><br>
         <span>Distance: {{getDistance(pool.coordinates.latitude, pool.coordinates.longitude) | number: 1}} KM </span><br>
@@ -57,7 +51,7 @@
       </li>
     </ul>
 
-    <pre>{{pools | filter:query |orderBy:orderProp | json}}</pre>
+    <pre>{{pools | filter:query |orderBy:distanceSort | json}}</pre>
   </div>
 </body>
 </html>

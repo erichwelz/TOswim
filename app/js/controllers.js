@@ -23,15 +23,13 @@ TOswimApp.controller('PoolListCtrl', ['$scope', '$http', function ($scope, $http
     return dateMaker(7) ;
   };
 
-  $scope.filterByTime = function ( pool) {
+  $scope.filterByDate = function (pool) {
     // return all pools matching checked date, default to all dates
 
     var selected_date = $scope.filter[undefined];
 
     return Object.keys(pool.times).indexOf(selected_date) > -1 || noFilter($scope.filter);
   };
-
-  $scope.orderProp = 'name'; //sets default for orderProp scope
 
   function dateMaker(days) {
     // returns array of dates in format of "Fri Nov 27" starting with today
@@ -52,7 +50,7 @@ TOswimApp.controller('PoolListCtrl', ['$scope', '$http', function ($scope, $http
 
   $scope.distanceSort = function ( pool ) {
     return $scope.getDistance(pool.coordinates.latitude, pool.coordinates.longitude);
-  }
+  };
 
 
   $scope.getDistance = function (lat1, lon1, lat2, lon2) {
@@ -71,7 +69,7 @@ TOswimApp.controller('PoolListCtrl', ['$scope', '$http', function ($scope, $http
           (1 - c((lon2 - lon1) * p))/2;
 
   return 12742 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km
-}
+};
 
   function noFilter(filterObj) {
     for (var key in filterObj) {
