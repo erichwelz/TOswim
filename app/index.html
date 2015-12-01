@@ -15,13 +15,14 @@
   <div class="container-fluid">
     <div class="col-md-2">
       <!-- Sidebar content -->
-
       <label>Universal search: <input ng-model="query"></label>
 
   Date:
   <select name="repeatSelect" id="repeatSelect" ng-model="filter[date]">
    <option ng-repeat="date in getDates()" value="{{date}}">{{date}}</option>
-  </select>
+ </select><br>
+
+ Only free swims? <input type="checkbox" ng-model="filter[free_swim]" />
 
     </div>
   </div>
@@ -30,8 +31,9 @@
     <!-- Body content -->
     <p>Matches: {{filtered.length}}</p>
     <ul class="pools">
-      <li ng-repeat="pool in filtered=(pools | filter:query | filter:filterByDate) | orderBy:distanceSort">
+      <li ng-repeat="pool in filtered=(pools | filter:query | filter:filterByDate | filter:freeSwim) | orderBy:distanceSort">
         <span>{{pool.name}}</span><br />
+        <span>Free facility: {{pool.free_swim}}</span><br>
         <span>Address: {{pool.address}}</span><br>
         <span>Distance: {{getDistance(pool.coordinates.latitude, pool.coordinates.longitude) | number: 1}} KM </span><br>
           <span> Swim Times</span>

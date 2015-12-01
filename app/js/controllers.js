@@ -17,6 +17,10 @@ TOswimApp.controller('PoolListCtrl', ['$scope', '$http', function ($scope, $http
     return dateMaker(7) ;
   };
 
+  $scope.freeSwim = function( pool ) {
+    return pool
+  }
+
   $scope.filterByDate = function (pool) {
     // return all pools matching checked date, default to all dates
 
