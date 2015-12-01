@@ -121,12 +121,19 @@ def gather_pool_program_cost_status
   free_facility_article = doc.at_css("#maincontent")
 
   links = free_facility_article.css('a')
-  all_hrefs = links.map {|link| link.attribute('href').to_s}.uniq.sort.delete_if {|href| href.empty?}
+  all_hrefs = links.map { |link| link.attribute('href').to_s }.uniq.sort.delete_if { |href| href.empty? }
   free_facility_hrefs = all_hrefs.keep_if{ |href| href.match("\/parks/prd/facilities/complex\w*") }
+  free_facility_urls_regexed = free_facility_hrefs.map{ |url| url.match(/\/parks\/prd\/facilities\/complex\/\d*/).to_s }
 
   @pools.each do |pool|
-    pool[:free_swim] = [true, false].sample
-  end
+    pool_url_regex = pool[:url].match(/\/parks\/prd\/facilities\/complex\/\d*/).to_s
+    match = free_facility_urls_regexed.find{ |e| pool_url_regex == e }
+    if match
+      pool[:free_swim] = true
+    else
+      pool[:free_swim] = false
+    end
+   end
 
   File.open("pools_data.json","w") do |f|
     f.write(@pools.to_json)
