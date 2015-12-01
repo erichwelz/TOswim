@@ -116,6 +116,14 @@ end
 def gather_pool_program_cost_status
   @pools = JSON.parse(File.read('pools_data.json'), symbolize_names: true)
 
+  page = "http://www1.toronto.ca/wps/portal/contentonly?vgnextoid=aaafdada600f0410VgnVCM10000071d60f89RCRD&vgnextchannel=a96adada600f0410VgnVCM10000071d60f89RCRD"
+  doc = Nokogiri::HTML(open(page))
+  free_facility_article = doc.at_css("#maincontent")
+
+  links = free_facility_article.css('a')
+  all_hrefs = links.map {|link| link.attribute('href').to_s}.uniq.sort.delete_if {|href| href.empty?}
+  free_facility_hrefs = all_hrefs.keep_if{ |href| href.match("\/parks/prd/facilities/complex\w*") }
+
   @pools.each do |pool|
     pool[:free_swim] = [true, false].sample
   end
