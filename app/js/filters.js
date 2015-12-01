@@ -25,3 +25,29 @@ TOswimApp.filter('limitdaysTo', [function(){
     return ret;
   };
 }]);
+
+TOswimApp.filter('poolType', function () {
+  return function(input, filter) {
+    var result;
+
+    if(canFilter(filter)) {
+      result = [];
+      angular.forEach(input, function(pool) {
+        if(filter[pool.free_swim])
+          result.push(pool);
+      });
+
+    } else
+      result = input;
+
+    return result;
+  };
+
+  function canFilter(filter) {
+    var hasFilter = false;
+    angular.forEach(filter, function(isFiltered) {
+      hasFilter = hasFilter || isFiltered;
+    });
+    return hasFilter;
+  }
+});
