@@ -113,9 +113,24 @@ def gather_pool_swim_times
   end
 end
 
-# gather_pool_urls()
-gather_pool_swim_times()
+def gather_pool_program_cost_status
+  @pools = JSON.parse(File.read('pools_data.json'), symbolize_names: true)
 
+  @pools.each do |pool|
+    pool[:free_swim] = [true, false].sample
+  end
+
+  File.open("pools_data.json","w") do |f|
+    f.write(@pools.to_json)
+    puts "Writing program cost status to pools_data.json complete"
+  end
+end
+
+
+
+# gather_pool_urls()
+# gather_pool_swim_times()
+gather_pool_program_cost_status()
 
 # Todo
 # add a test suite, break geotagging into separate method
