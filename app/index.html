@@ -32,7 +32,7 @@
     <!-- Body content -->
     <p>Matches: {{filtered.length}}</p>
     <ul class="pools">
-      <li ng-repeat="pool in filtered=(pools | filter:query | filter:filterByDate | poolType:free_swim) | orderBy:distanceSort">
+      <li ng-repeat="pool in filtered=(pools | filter:query | filter:filterByDate | filter:poolType) | orderBy:distanceSort">
         <span>{{pool.name}}</span><br />
         <span>Free facility: {{pool.free_swim}}</span><br>
         <span>Address: {{pool.address}}</span><br>

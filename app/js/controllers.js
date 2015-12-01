@@ -10,18 +10,25 @@ TOswimApp.controller('PoolListCtrl', ['$scope', '$http', function ($scope, $http
     });
 
   var default_date_filter = {};
-  default_date_filter['date'] = dateMaker().toString();
+  default_date_filter.date = dateMaker().toString();
   $scope.filter = default_date_filter; //sets default scope to 'today'
-  // $scope.filter['free_swim'] = true; //sets default free_swim to false
 
   $scope.getDates = function() {
     return dateMaker(7) ;
   };
 
+  $scope.poolType = function (pool) {
+    if ( $scope.filter.free_swim === true ) {
+      return pool.free_swim === true;
+    } else {
+    return pool;
+    }
+  };
+
   $scope.filterByDate = function (pool) {
     // return all pools matching checked date, default to all dates
 
-    var selected_date = $scope.filter['date'];
+    var selected_date = $scope.filter.date;
 
     return Object.keys(pool.times).indexOf(selected_date) > -1 || noFilter($scope.filter);
   };
