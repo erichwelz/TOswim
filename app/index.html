@@ -36,7 +36,7 @@
         <span>{{pool.name}}</span><br />
         <span>Free facility: {{pool.free_swim}}</span><br>
         <span>Address: {{pool.address}}</span><br>
-        <span>Distance: {{getDistance(pool.coordinates.latitude, pool.coordinates.longitude) | number: 1}} KM </span><br>
+        <span>Distance: {{getDistance(pool.coordinates) | number: 1}} KM </span><br>
           <span> Swim Times</span>
           <ul>
             <li ng-repeat="(date, times) in pool.times | limitdaysTo:this.filter.date">{{date}}
