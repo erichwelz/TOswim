@@ -1,10 +1,13 @@
 'use strict';
 
 TOswimApp.filter('limitdaysTo', [function(){
-  return function(obj, limit){
-    // day offset for number of days since Sunday (set programatically based on JSON data date compared to today?)
-    var dayOffset = 6,
-    keys = Object.keys(obj);
+  return function(obj, scope){
+
+    // passing scope in to get currently selected date
+    var selectedDate = scope.filter.date,
+    keys = Object.keys(obj),
+    dayOffset = keys.indexOf(selectedDate),
+    limit = 5;
 
     if ( keys.length < 1 ) {
       return [];

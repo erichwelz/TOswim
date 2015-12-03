@@ -39,7 +39,7 @@
         <span>Distance: {{getDistance(pool.coordinates.latitude, pool.coordinates.longitude) | number: 1}} KM </span><br>
           <span> Swim Times</span>
           <ul>
-            <li ng-repeat="(date, times) in pool.times | limitdaysTo:5">{{date}}
+            <li ng-repeat="(date, times) in pool.times | limitdaysTo:this">{{date}}
               <ul>
                 <li ng-repeat="time in times"> {{time}}</li>
               </ul>
