@@ -79,6 +79,14 @@ TOswimApp.controller('PoolListCtrl', ['$scope', '$http', function ($scope, $http
     var currentLoc = {};
     currentLoc.latitude = 43.6792740; //my latitude
     currentLoc.longitude = -79.3592080; //my longitude
+
+    // need to set this up to work with async(callbacks or promises)
+    // function success(pos) {
+    //   currentLoc.latitude = pos.coords.latitude;
+    //   currentLoc.longitude = pos.coords.longitude;
+    // }
+    //
+    // navigator.geolocation.getCurrentPosition(success);
     return currentLoc;
   }
 }]);
