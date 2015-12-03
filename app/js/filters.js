@@ -1,11 +1,9 @@
 'use strict';
 
-TOswimApp.filter('limitdaysTo', [function(){
-  return function(obj, scope){
-
+TOswimApp.filter('limitdaysTo', [function() {
+  return function(obj, selectedDate){
     // passing scope in to get currently selected date
-    var selectedDate = scope.filter.date,
-    keys = Object.keys(obj),
+    var keys = Object.keys(obj),
     dayOffset = keys.indexOf(selectedDate),
     limit = 5;
 
