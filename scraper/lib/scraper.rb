@@ -1,6 +1,7 @@
 require "bundler"
 Bundler.setup :default
 
+# Gems
 require 'nokogiri'
 require 'open-uri'
 require 'pry'
