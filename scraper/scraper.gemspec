@@ -18,9 +18,9 @@ Gem::Specification.new do |s|
   s.test_files    = s.files.grep(%r{^(test|spec|features)/})
   s.require_paths = ["lib"]
 
-  s.add_dependency "bundler", "~> 1.0"
+  s.add_dependency "bundler", "~> 1.3"
   s.add_dependency "geocoder", "~> 1.2"
-  s.add_dependency "json", "~> 1.8"
+  s.add_dependency 'json', '~> 1.8', '>= 1.8.3'
   s.add_dependency "nokogiri", "~> 1.6"
   s.add_dependency "pry", "~> 0.10"
 end
