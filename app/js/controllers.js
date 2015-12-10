@@ -9,8 +9,7 @@ TOswimApp.controller('PoolListCtrl', ['$scope', '$http', function ($scope, $http
     $scope.pools = data;
     });
 
-  var defaultFilter = { date: dateMaker().toString() };
-  $scope.filter = defaultFilter;
+  $scope.filter = { date: dateMaker().toString() };
 
   $scope.getDates = function() {
     return dateMaker(7) ;
