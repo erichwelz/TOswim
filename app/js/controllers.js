@@ -10,7 +10,7 @@ TOswimApp.controller('PoolListCtrl', ['$scope', '$http', function ($scope, $http
     });
 
   $scope.filter = { date: dateMaker().toString(),
-                    currentLoc: { latitude: 43.6792740, longitude: -79.3592080 }
+                    currentLoc: { latitude: 43.7, longitude: -79 }
                   };
 
   $scope.getDates = function() {
@@ -65,9 +65,7 @@ TOswimApp.controller('PoolListCtrl', ['$scope', '$http', function ($scope, $http
 
   $scope.getDistance = function (poolLoc) {
     var currentLoc = $scope.filter.currentLoc;
-    // if (!currentLoc) {
-    //   // currentLoc = getCurrentLocation();
-    // }
+
     var p = 0.017453292519943295;    // Math.PI / 180
     var c = Math.cos;
     var a = 0.5 - c((currentLoc.latitude - poolLoc.latitude) * p)/2 +
@@ -77,16 +75,11 @@ TOswimApp.controller('PoolListCtrl', ['$scope', '$http', function ($scope, $http
     return 12742 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km
   };
 
-  // function getCurrentLocation() {
-  //   var currentLoc = { latitude: 43.6792740, longitude: -79.3592080 }; // my location
-  //
-  //   // need to set this up to work with async(callbacks or promises)
-  //   // function success(pos) {
-  //   //   currentLoc.latitude = pos.coords.latitude;
-  //   //   currentLoc.longitude = pos.coords.longitude;
-  //   // }
-  //   //
-  //   // navigator.geolocation.getCurrentPosition(success);
-  //   return currentLoc;
-  // }
+  navigator.geolocation.getCurrentPosition(function (pos) {
+    $scope.$apply(function() {
+      $scope.filter.currentLoc.latitude = pos.coords.latitude;
+      $scope.filter.currentLoc.longitude = pos.coords.longitude;
+    });
+  });
+
 }]);
