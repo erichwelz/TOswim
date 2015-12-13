@@ -4,13 +4,13 @@
 
 var TOswimApp = angular.module('TOswimApp', []);
 
-TOswimApp.controller('PoolListCtrl', ['$scope', '$http', function ($scope, $http) {
+TOswimApp.controller('PoolListCtrl', ['$scope', '$http', '$window', function ($scope, $http, $window) {
   $http.get('swim_data/pools_data.json').success(function(data) {
     $scope.pools = data;
     });
 
   $scope.filter = { date: dateMaker().toString(),
-                    currentLoc: { latitude: 43.7, longitude: -79 }
+                    currentLoc: { latitude: 43.653908, longitude: -79.384293 } // lat, long of city hall
                   };
 
   $scope.getDates = function() {
@@ -75,7 +75,8 @@ TOswimApp.controller('PoolListCtrl', ['$scope', '$http', function ($scope, $http
     return 12742 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km
   };
 
-  navigator.geolocation.getCurrentPosition(function (pos) {
+  $window.navigator.geolocation.getCurrentPosition(function (pos) {
+    // need to apply as async call and Angular doesn't know to watch
     $scope.$apply(function() {
       $scope.filter.currentLoc.latitude = pos.coords.latitude;
       $scope.filter.currentLoc.longitude = pos.coords.longitude;
