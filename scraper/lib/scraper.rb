@@ -26,8 +26,8 @@ module Scraper
       urls.each do |url|
         doc = Nokogiri::HTML(open(url))
         pools = doc.at_css("#pfrBody > div.pfrListing > table > tbody")
-        pool_names += pools.css('a').map { |link| link.children.text }
-        pool_links += pools.css('a').map { |link| link['href'] }
+        pool_names = pools.css('a').map { |link| link.children.text }
+        pool_links = pools.css('a').map { |link| link['href'] }
 
         address_index_incrementer = pools.css('td').length / pools.css('tr').length
         pools.css('td').each_with_index do |node, index|
@@ -39,7 +39,7 @@ module Scraper
       end
 
       # Geotag pools
-      pool_coordinates += pool_addresses.map { |address| gather_pool_coordinates(address) }
+      pool_coordinates = pool_addresses.map { |address| gather_pool_coordinates(address) }
 
       # Convert Pool Data to Hash
       pool_names.each_with_index do |pool, index|
