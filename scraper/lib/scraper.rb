@@ -73,14 +73,7 @@ module Scraper
       # Geotag pools
       pool_coordinates ||= []
       @pool_addresses.each do |address|
-        coordinates_arr = Geocoder.coordinates("#{address}, Toronto")
-        pool_coordinates << { latitude: coordinates_arr[0], longitude: coordinates_arr[1] }
-
-        # pool_coordinates << { latitude: 50.123, longitude: 50.12 }
-        puts "Geocoding... #{address}"
-
-        # To avoid triggering google API limit of 10 queries per second
-        sleep(0.15)
+        pool_coordinates << gather_pool_coordinates(address)
       end
 
       # Convert Pool Data to Hash
@@ -97,6 +90,15 @@ module Scraper
       File.open("pool_urls.json","w") do |f|
         f.write(@pool_urls.to_json)
       end
+    end
+
+    def gather_pool_coordinates(address)
+      # To avoid triggering google API limit of 10 queries per second
+      sleep(0.15)
+      coordinates_arr = Geocoder.coordinates("#{address}, Toronto")
+      puts "Geocoding... #{address}"
+
+      return { latitude: coordinates_arr[0], longitude: coordinates_arr[1] }
     end
 
     #####Parse Weekly Leisure Swim Data#####
