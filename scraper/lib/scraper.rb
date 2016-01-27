@@ -10,6 +10,49 @@ module Scraper
 
     Geocoder.configure(:timeout => 10)
 
+    def gather_pool_urls
+      @pool_urls, @pool_names, @pool_addresses, @pool_links, @pool_coordinates = [],[],[],[],[]
+
+      # Gather Pool Data
+      urls = ["http://www1.toronto.ca/parks/prd/facilities/indoor-pools/index.htm",
+              "http://www1.toronto.ca/parks/prd/facilities/indoor-pools/2-indoor_pool.htm",
+              "http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm",
+              "http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/2-outdoor_pool.htm"]
+
+      urls.each do |url|
+        doc = Nokogiri::HTML(open(url))
+        pools = doc.at_css("#pfrBody > div.pfrListing > table > tbody")
+        @pool_names += pools.css('a').map { |link| link.children.text }
+        @pool_links += pools.css('a').map { |link| link['href'] }
+
+        address_index_incrementer = pools.css('td').length / pools.css('tr').length
+        pools.css('td').each_with_index do |node, index|
+          # Address is always second column, table width varies for indoor vs. outdoor
+          if index % address_index_incrementer == 1
+            @pool_addresses << node.text
+          end
+        end
+      end
+
+      # Geotag pools
+      @pool_coordinates += @pool_addresses.map { |address| gather_pool_coordinates(address) }
+
+      # Convert Pool Data to Hash
+      @pool_names.each_with_index do |pool, index|
+        current_pool = {}
+        current_pool[:name] = @pool_names[index]
+        current_pool[:url] = @pool_links[index]
+        current_pool[:address] = @pool_addresses[index]
+        current_pool[:coordinates] = @pool_coordinates[index]
+        @pool_urls << current_pool
+      end
+
+      # Write Hash
+      File.open("pool_urls.json","w") do |f|
+        f.write(@pool_urls.to_json)
+      end
+    end
+
     def simple_equal(num)
       2 * num
     end
@@ -43,53 +86,6 @@ module Scraper
 
       # remove days with no swim times
       weeks.delete_if { |day, time| time == [" "] || time == [] }
-    end
-
-    # Gather the pools
-    def gather_pool_urls(geocode = false)
-      @pool_urls, @pool_names, @pool_addresses, @pool_links = [],[],[],[]
-
-      # Gather Pool Data
-      urls = ["http://www1.toronto.ca/parks/prd/facilities/indoor-pools/index.htm",
-              "http://www1.toronto.ca/parks/prd/facilities/indoor-pools/2-indoor_pool.htm",
-              "http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm",
-              "http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/2-outdoor_pool.htm"]
-
-      urls.each do |url|
-        doc = Nokogiri::HTML(open(url))
-        pools = doc.at_css("#pfrBody > div.pfrListing > table > tbody")
-        @pool_names += pools.css('a').map { |link| link.children.text }
-        @pool_links += pools.css('a').map { |link| link['href'] }
-
-        address_index_incrementer = pools.css('td').length / pools.css('tr').length
-        pools.css('td').each_with_index do |node, index|
-          # Address is always second column, table width varies for indoor vs. outdoor
-          if index % address_index_incrementer == 1
-            @pool_addresses << node.text
-          end
-        end
-      end
-
-      # Geotag pools
-      pool_coordinates ||= []
-      @pool_addresses.each do |address|
-        pool_coordinates << gather_pool_coordinates(address)
-      end
-
-      # Convert Pool Data to Hash
-      @pool_names.each_with_index do |pool, index|
-        current_pool = {}
-        current_pool[:name] = @pool_names[index]
-        current_pool[:url] = @pool_links[index]
-        current_pool[:address] = @pool_addresses[index]
-        current_pool[:coordinates] = pool_coordinates[index]
-        @pool_urls << current_pool
-      end
-
-      # Write Hash
-      File.open("pool_urls.json","w") do |f|
-        f.write(@pool_urls.to_json)
-      end
     end
 
     def gather_pool_coordinates(address)
@@ -148,8 +144,8 @@ module Scraper
 end
 
 Scraper.gather_pool_urls
-Scraper.gather_pool_swim_times
-Scraper.gather_pool_program_cost_status
+# Scraper.gather_pool_swim_times
+# Scraper.gather_pool_program_cost_status
 
 # Todo
 # add a test suite, break geotagging into separate method
