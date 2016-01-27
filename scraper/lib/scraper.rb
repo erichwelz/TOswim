@@ -14,10 +14,14 @@ module Scraper
       @pool_urls, pool_names, pool_addresses, pool_links, pool_coordinates = [],[],[],[],[]
 
       # Gather Pool Data
-      urls = ["http://www1.toronto.ca/parks/prd/facilities/indoor-pools/index.htm",
-              "http://www1.toronto.ca/parks/prd/facilities/indoor-pools/2-indoor_pool.htm",
-              "http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm",
-              "http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/2-outdoor_pool.htm"]
+      # Full list
+      # urls = ["http://www1.toronto.ca/parks/prd/facilities/indoor-pools/index.htm",
+      #         "http://www1.toronto.ca/parks/prd/facilities/indoor-pools/2-indoor_pool.htm",
+      #         "http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm",
+      #         "http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/2-outdoor_pool.htm"]
+
+      # For faster testing
+      urls = ["http://www1.toronto.ca/parks/prd/facilities/indoor-pools/index.htm"]
 
       urls.each do |url|
         doc = Nokogiri::HTML(open(url))
@@ -26,10 +30,11 @@ module Scraper
         pool_links += pools.css('a').map { |link| link['href'] }
 
         address_index_incrementer = pools.css('td').length / pools.css('tr').length
-        pools.css('td').each_with_index do |node, index|
+
+        pool_addresses += pools.css('td').map.with_index do |node, index|
           # Address is always second column, table width varies for indoor vs. outdoor
           if index % address_index_incrementer == 1
-            pool_addresses << node.text
+            node.text
           end
         end
       end
