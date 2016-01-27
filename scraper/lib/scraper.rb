@@ -30,11 +30,10 @@ module Scraper
         pool_links += pools.css('a').map { |link| link['href'] }
 
         address_index_incrementer = pools.css('td').length / pools.css('tr').length
-
-        pool_addresses += pools.css('td').map.with_index do |node, index|
+        pools.css('td').each_with_index do |node, index|
           # Address is always second column, table width varies for indoor vs. outdoor
           if index % address_index_incrementer == 1
-            node.text
+            pool_addresses << node.text
           end
         end
       end
