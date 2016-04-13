@@ -8,34 +8,25 @@ require 'geocoder'
 module Scraper
   class << self
 
+    # faster testing
+    POOL_LIST_URLS = ["http://www1.toronto.ca/parks/prd/facilities/indoor-pools/index.htm"]
+    # Full list
+    # POOL_URLS = ["http://www1.toronto.ca/parks/prd/facilities/indoor-pools/index.htm",
+    #         "http://www1.toronto.ca/parks/prd/facilities/indoor-pools/2-indoor_pool.htm",
+    #         "http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm",
+    #         "http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/2-outdoor_pool.htm"]
+
     Geocoder.configure(:timeout => 10)
 
-    def gather_pool_urls
+    def gather_pool_info
       @pool_urls, pool_names, pool_addresses, pool_links, pool_coordinates = [],[],[],[],[]
 
-      # Gather Pool Data
-      # Full list
-      # urls = ["http://www1.toronto.ca/parks/prd/facilities/indoor-pools/index.htm",
-      #         "http://www1.toronto.ca/parks/prd/facilities/indoor-pools/2-indoor_pool.htm",
-      #         "http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm",
-      #         "http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/2-outdoor_pool.htm"]
-
-      # For faster testing
-      urls = ["http://www1.toronto.ca/parks/prd/facilities/indoor-pools/index.htm"]
-
-      urls.each do |url|
+      POOL_LIST_URLS.each do |url|
         doc = Nokogiri::HTML(open(url))
         pools = doc.at_css("#pfrBody > div.pfrListing > table > tbody")
         pool_names += pools.css('a').map { |link| link.children.text }
         pool_links += pools.css('a').map { |link| link['href'] }
-
-        address_index_incrementer = pools.css('td').length / pools.css('tr').length
-        pools.css('td').each_with_index do |node, index|
-          # Address is always second column, table width varies for indoor vs. outdoor
-          if index % address_index_incrementer == 1
-            pool_addresses << node.text
-          end
-        end
+        pool_addresses += gather_pool_address(pools)
       end
 
       # Geotag pools
@@ -92,6 +83,18 @@ module Scraper
       weeks.delete_if { |day, time| time == [" "] || time == [] }
     end
 
+    def gather_pool_address(pools)
+      pool_address = []
+      address_index_incrementer = pools.css('td').length / pools.css('tr').length
+      pools.css('td').each_with_index do |node, index|
+        # Address is always second column, table width varies for indoor vs. outdoor
+        if index % address_index_incrementer == 1
+          pool_address << node.text
+        end
+      end
+      pool_address
+    end
+
     def gather_pool_coordinates(address)
       # To avoid triggering google API limit of 10 queries per second
       sleep(0.15)
@@ -100,6 +103,8 @@ module Scraper
 
       return { latitude: coordinates_arr[0], longitude: coordinates_arr[1] }
     end
+
+
 
     #####Parse Weekly Leisure Swim Data#####
     def gather_pool_swim_times
@@ -147,7 +152,7 @@ module Scraper
   end
 end
 
-Scraper.gather_pool_urls
+Scraper.gather_pool_info
 # Scraper.gather_pool_swim_times
 # Scraper.gather_pool_program_cost_status
 
@@ -160,15 +165,3 @@ Scraper.gather_pool_urls
 
 #Indoor pools list: http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm
 #Outdoor pools list: http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm
-
-#Bugs
-
-#Done
-#figure out how to split multiple swim times into array
-#loop for multiple weeks
-#build hashes
-#capture indoor pool lists
-#determine output, save as json object or YAML?
-# Pool geocode data - http://www.rubygeocoder.com/
-# Symbolize keys for JSON retrieval as JSON doesn't natively support keys, rather uses strings
-# latitude / longitude, display proper
