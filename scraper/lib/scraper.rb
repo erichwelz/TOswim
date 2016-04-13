@@ -26,7 +26,7 @@ module Scraper
         pools = doc.at_css("#pfrBody > div.pfrListing > table > tbody")
         pool_names += pools.css('a').map { |link| link.children.text }
         pool_links += pools.css('a').map { |link| link['href'] }
-        pool_addresses += gather_pool_address(pools)
+        pool_addresses += gather_pool_addresses(pools)
       end
 
       # Geotag pools
@@ -83,16 +83,16 @@ module Scraper
       weeks.delete_if { |day, time| time == [" "] || time == [] }
     end
 
-    def gather_pool_address(pools)
-      pool_address = []
+    def gather_pool_addresses(pools)
+      pool_addresses = []
       address_index_incrementer = pools.css('td').length / pools.css('tr').length
       pools.css('td').each_with_index do |node, index|
         # Address is always second column, table width varies for indoor vs. outdoor
         if index % address_index_incrementer == 1
-          pool_address << node.text
+          pool_addresses << node.text
         end
       end
-      pool_address
+      pool_addresses
     end
 
     def gather_pool_coordinates(address)
