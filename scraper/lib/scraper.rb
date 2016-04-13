@@ -11,7 +11,7 @@ module Scraper
     # faster testing
     POOL_LIST_URLS = ["http://www1.toronto.ca/parks/prd/facilities/indoor-pools/index.htm"]
     # Full list
-    # POOL_URLS = ["http://www1.toronto.ca/parks/prd/facilities/indoor-pools/index.htm",
+    # POOL_LIST_URLS = ["http://www1.toronto.ca/parks/prd/facilities/indoor-pools/index.htm",
     #         "http://www1.toronto.ca/parks/prd/facilities/indoor-pools/2-indoor_pool.htm",
     #         "http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm",
     #         "http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/2-outdoor_pool.htm"]
@@ -104,16 +104,12 @@ module Scraper
       return { latitude: coordinates_arr[0], longitude: coordinates_arr[1] }
     end
 
-
-
     #####Parse Weekly Leisure Swim Data#####
     def gather_pool_swim_times
-      if @pool_urls.nil?
-        @pool_urls = JSON.parse(File.read('pool_urls.json'), symbolize_names: true)
-      end
+      @pool_urls ||= JSON.parse(File.read('pool_urls.json'), symbolize_names: true)
 
       @pool_urls.each do |pool|
-        puts "Attempting to scrape: " + pool[:name]
+        puts "Scraping: " + pool[:name]
         url = "http://www1.toronto.ca" + pool[:url]
         doc = Nokogiri::HTML(open(url))
         pool[:times] = build_pool_schedule_array_from_html(doc)
@@ -157,11 +153,7 @@ Scraper.gather_pool_info
 # Scraper.gather_pool_program_cost_status
 
 # Todo
-# add a test suite, break geotagging into separate method
-# break rejecting days into separate method?
+# add a test suite
 # remind self how to log name of vars while blown up (smaller method with info passed in probably!)
 #start displaying, filtering?
 #maybe transform date save
-
-#Indoor pools list: http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm
-#Outdoor pools list: http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm
