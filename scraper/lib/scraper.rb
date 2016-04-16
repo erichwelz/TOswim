@@ -14,12 +14,12 @@ module Scraper
 
 
     # faster testing
-    POOL_LIST_URLS = ["http://www1.toronto.ca/parks/prd/facilities/indoor-pools/index.htm"]
+    # POOL_LIST_URLS = ["http://www1.toronto.ca/parks/prd/facilities/indoor-pools/index.htm"]
     # Full list
-    # POOL_LIST_URLS = ["http://www1.toronto.ca/parks/prd/facilities/indoor-pools/index.htm",
-    #         "http://www1.toronto.ca/parks/prd/facilities/indoor-pools/2-indoor_pool.htm",
-    #         "http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm",
-    #         "http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/2-outdoor_pool.htm"]
+    POOL_LIST_URLS = ["http://www1.toronto.ca/parks/prd/facilities/indoor-pools/index.htm",
+            "http://www1.toronto.ca/parks/prd/facilities/indoor-pools/2-indoor_pool.htm",
+            "http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/index.htm",
+            "http://www1.toronto.ca/parks/prd/facilities/outdoor-pools/2-outdoor_pool.htm"]
 
     Geocoder.configure(:timeout => 10)
 
@@ -35,6 +35,7 @@ module Scraper
       end
 
       # Geotag pools
+      puts "\n--- Scraping pool coordinates ---"
       pool_coordinates = pool_addresses.map { |address| gather_pool_coordinates(address) }
 
       # Convert Pool Data to Hash
@@ -100,21 +101,53 @@ module Scraper
       pool_addresses
     end
 
+    # Method accepting a block that supresses stdout/console logging
+    #  https://gist.github.com/moertel/11091573
+
+    def suppress_output
+      begin
+        original_stderr = $stderr.clone
+        original_stdout = $stdout.clone
+        $stderr.reopen(File.new('/dev/null', 'w'))
+        $stdout.reopen(File.new('/dev/null', 'w'))
+        retval = yield
+      rescue Exception => e
+        $stdout.reopen(original_stdout)
+        $stderr.reopen(original_stderr)
+        raise e
+      ensure
+        $stdout.reopen(original_stdout)
+        $stderr.reopen(original_stderr)
+      end
+      retval
+    end
+
     def gather_pool_coordinates(address)
+      if @display_mode == "verbose"
+        puts "Geocoding: #{address}"
+      else
+        print "."
+      end
+
+      coordinates_arr = suppress_output{ Geocoder.coordinates("#{address}, Toronto") }
+
       # To avoid triggering google API limit of 10 queries per second
       sleep(0.15)
-      coordinates_arr = Geocoder.coordinates("#{address}, Toronto")
-      puts "Geocoding... #{address}"
-
       return { latitude: coordinates_arr[0], longitude: coordinates_arr[1] }
     end
 
     #####Parse Weekly Leisure Swim Data#####
     def gather_pool_swim_times
       @pool_urls ||= JSON.parse(File.read('pool_urls.json'), symbolize_names: true)
-
+      puts "\n--- Scraping pool swim times ---"
       @pool_urls.each do |pool|
-        puts "Scraping: " + pool[:name]
+
+        if @display_mode == "verbose"
+          puts "Scraping: " + pool[:name]
+        else
+          print "."
+        end
+
         url = "http://www1.toronto.ca" + pool[:url]
         doc = Nokogiri::HTML(open(url))
         pool[:times] = build_pool_schedule_array_from_html(doc)
@@ -122,7 +155,7 @@ module Scraper
 
       File.open("pools_data.json","w") do |f|
         f.write(@pool_urls.to_json)
-        puts "Writing pools_data.json complete"
+        puts "\nWriting pools_data.json complete"
       end
     end
 
