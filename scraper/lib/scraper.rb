@@ -8,6 +8,11 @@ require 'geocoder'
 module Scraper
   class << self
 
+    def display_mode(display_mode)
+      @display_mode = display_mode
+    end
+
+
     # faster testing
     POOL_LIST_URLS = ["http://www1.toronto.ca/parks/prd/facilities/indoor-pools/index.htm"]
     # Full list
@@ -147,10 +152,6 @@ module Scraper
 
   end
 end
-
-Scraper.gather_pool_info
-# Scraper.gather_pool_swim_times
-# Scraper.gather_pool_program_cost_status
 
 # Todo
 # add a test suite
