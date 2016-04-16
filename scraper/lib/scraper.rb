@@ -138,7 +138,13 @@ module Scraper
 
     #####Parse Weekly Leisure Swim Data#####
     def gather_pool_swim_times
-      @pool_urls ||= JSON.parse(File.read('pool_urls.json'), symbolize_names: true)
+      begin
+        @pool_urls ||= JSON.parse(File.read('pool_urls.json'), symbolize_names: true)
+      rescue => e
+        puts "Couldn't open pool_info, run scrape -f or run in path with pool_urls.json file"
+        exit
+      end
+
       puts "\n--- Scraping pool swim times ---"
       @pool_urls.each do |pool|
 
